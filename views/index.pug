@@ -2,4 +2,8 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  p 研究室の出欠機能を簡単に。
+  if user
+    a(href="/logout") ログアウト
+  else
+    a(href="/login") ログイン
