@@ -21,11 +21,13 @@ describe('/login', () => {
       .expect(/<a href="\/auth\/github"/)
       .expect(200);
   });
+});
 
-  test('ログイン時はユーザー名が表示される', () => {
+describe('/logout', () => {
+  test('/にリダイレクトされる', () => {
     return request(app)
-      .get('/login')
-      .expect(/testuser/)
-      .expect(200);
+      .get('/logout')
+      .expect('Location', '/')
+      .expect(302);
   });
 });

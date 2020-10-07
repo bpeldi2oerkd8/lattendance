@@ -4,6 +4,7 @@ block content
   h1= title
   p 研究室の出欠機能を簡単に。
   if user
+    p 現在 #{user.username} でログイン中
     a(href="/logout") ログアウト
   else
     a(href="/login") ログイン
