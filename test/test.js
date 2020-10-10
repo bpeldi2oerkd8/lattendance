@@ -14,11 +14,11 @@ describe('/login', () => {
     passportStub.uninstall(app);
   });
 
-  test('ログインのためのリンクが含まれる', () => {
+  test('ログインボタンが含まれる', () => {
     return request(app)
       .get('/login')
       .expect('Content-Type', 'text/html; charset=utf-8')
-      .expect(/<a href="\/auth\/github"/)
+      .expect(/<a class="btn btn-dark" href="\/auth\/github"/)
       .expect(200);
   });
 });
