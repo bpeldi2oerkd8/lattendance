@@ -12,6 +12,8 @@ var github_info = require('./secret_info/github_info');
 var GITHUB_CLIENT_ID = github_info.GITHUB_CLIENT_ID;
 var GITHUB_CLIENT_SECRET = github_info.GITHUB_CLIENT_SECRET;
 
+var session_info = require('./secret_info/session_info');
+
 passport.serializeUser(function (user, done) {
   done(null, user);
 });
@@ -49,7 +51,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({ secret: 'e55be81b307c1c09', resave: false, saveUninitialized: false }));
+app.use(session({ secret: session_info, resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
