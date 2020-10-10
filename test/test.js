@@ -3,7 +3,7 @@ const request = require('supertest');
 const app = require('../app');
 const passportStub = require('passport-stub');
 
-describe('/login', () => {
+describe('/', () => {
   beforeAll(() => {
     passportStub.install(app);
     passportStub.login({ username: 'testuser' });
@@ -14,6 +14,15 @@ describe('/login', () => {
     passportStub.uninstall(app);
   });
 
+  test('ログイン時にユーザー名が含まれる', () => {
+    return request(app)
+      .get('/')
+      .expect('Content-Type', 'text/html; charset=utf-8')
+      .expect(/testuser/)
+      .expect(200);
+  });
+});
+describe('/login', () => {
   test('ログインボタンが含まれる', () => {
     return request(app)
       .get('/login')
