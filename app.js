@@ -8,6 +8,21 @@ var session = require('express-session');
 var passport = require('passport');
 var GitHubStrategy = require('passport-github2').Strategy;
 
+// モデルの読み込み
+var User = require('./models/user');
+var Schedule = require('./models/schedule');
+var Availability = require('./models/availability');
+var Date = require('./models/date');
+User.sync().then(() => {
+  Schedule.belongsTo(User, {foreignKey: 'createdBy'});
+  Schedule.sync();
+  Availability.belongsTo(User, {foreignKey: 'userId'});
+  Date.sync().then(() => {
+    Availability.belongsTo(Date, {foreignKey: 'dateId'});
+    Availability.sync();
+  });
+});
+
 var github_info = require('./secret_info/github_info');
 var GITHUB_CLIENT_ID = github_info.GITHUB_CLIENT_ID;
 var GITHUB_CLIENT_SECRET = github_info.GITHUB_CLIENT_SECRET;
