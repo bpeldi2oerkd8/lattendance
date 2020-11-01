@@ -6,12 +6,9 @@ block content
       p.text-center SlackのIDが登録されていません。
       p.text-center SlackのIDを入力し、登録ボタンを押してください。
       p.text-center SlackのIDは自分のプロフィールを表示し、<br>「その他」→「メンバーIDをコピー」でコピーしたものを貼り付けてください。
-      form(method="post", action="/slack-id-register").my-3
-        div.form-group
-          input(type="hidden" name="userId" value=user.userid).form-control
+      form(method="post", action="").my-3
         div.form-group
           p ユーザー名：#{user.username}
-          input(type="hidden" name="userName" value=user.username).form-control
         div.form-group
           label(for="slackId") SlackのID：
           input(type="text" name="slackId").form-control
