@@ -44,7 +44,20 @@ passport.use(new GitHubStrategy({
 },
   function (accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
-      return done(null, profile);
+      const userId = profile.id;
+      const userName = profile.username;
+
+      User.findOne({
+        where: {
+          userId: userId
+        }
+      }).then((user) => {
+        if(user) {
+          user.userName = userName;
+          user.save();
+        }
+        done(null, profile);
+      });
     });
   }
 ));
@@ -52,6 +65,7 @@ passport.use(new GitHubStrategy({
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
+var slackIdRegisterRouter = require('./routes/slack-id-register');
 
 var app = express();
 app.use(helmet());
@@ -73,6 +87,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
+app.use('/slack-id-register', slackIdRegisterRouter);
 
 app.get('/auth/github',
   passport.authenticate('github', { scope: ['user:email'] }),
@@ -82,7 +97,17 @@ app.get('/auth/github',
 app.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   function (req, res) {
-    res.redirect('/');
+    User.findOne({
+      where: {
+        userId: req.user.id
+      }
+    }).then((user) => {
+      if(user) {
+        res.redirect('/');
+      } else {
+        res.redirect('/slack-id-register');
+      }
+    });
 });
 
 // catch 404 and forward to error handler
