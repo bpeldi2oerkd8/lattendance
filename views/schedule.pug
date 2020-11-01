@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h3.my-3 #{schedule.scheduleName}
+  p.my-3 #{schedule.description}
+  table.table.table-hover
+    tr
+      th 日程
+      each user in users
+        th #{user.username}
+    each date in dates
+      tr
+        td #{date.date}
+        each user in users
+          td 〇

@@ -12,13 +12,13 @@ var GitHubStrategy = require('passport-github2').Strategy;
 var User = require('./models/user');
 var Schedule = require('./models/schedule');
 var Availability = require('./models/availability');
-var Date = require('./models/date');
+var Dates = require('./models/date');
 User.sync().then(() => {
   Schedule.belongsTo(User, {foreignKey: 'createdBy'});
   Schedule.sync();
   Availability.belongsTo(User, {foreignKey: 'userId'});
-  Date.sync().then(() => {
-    Availability.belongsTo(Date, {foreignKey: 'dateId'});
+  Dates.sync().then(() => {
+    Availability.belongsTo(Dates, {foreignKey: 'dateId'});
     Availability.sync();
   });
 });
@@ -66,6 +66,7 @@ var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
 var slackIdRegisterRouter = require('./routes/slack-id-register');
+var schedulesRouter = require('./routes/schedules');
 
 var app = express();
 app.use(helmet());
@@ -88,6 +89,7 @@ app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/slack-id-register', slackIdRegisterRouter);
+app.use('/schedules', schedulesRouter);
 
 app.get('/auth/github',
   passport.authenticate('github', { scope: ['user:email'] }),
