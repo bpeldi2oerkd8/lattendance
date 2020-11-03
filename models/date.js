@@ -17,7 +17,7 @@ const Dates = loader.database.define(
     },
     memo: {
       type: Sequelize.TEXT,
-      alloeNull: true
+      allowNull: true
     },
     scheduleId: {
       type: Sequelize.UUID,

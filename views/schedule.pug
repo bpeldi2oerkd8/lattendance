@@ -2,7 +2,7 @@ extends layout
 
 block content
   h3.my-3 #{schedule.scheduleName}
-  p.my-3 #{schedule.description}
+  h5.my-3 #{schedule.description}
   table.table.table-hover
     tr
       th 日程
@@ -13,3 +13,7 @@ block content
         td #{date.date}
         each user in users
           td 〇
+  - var isMine = parseInt(user.id) === schedule.createdBy
+  if isMine
+    div
+      a(href=`/schedules/${schedule.scheduleId}/edit`).btn.btn-info.my-3 編集
