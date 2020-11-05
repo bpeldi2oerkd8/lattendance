@@ -23,9 +23,8 @@ User.sync().then(() => {
   });
 });
 
-var github_info = require('./secret_info/github_info');
-var GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID || github_info.GITHUB_CLIENT_ID;
-var GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET || github_info.GITHUB_CLIENT_SECRET;
+var GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID || require('./secret_info/github_info').GITHUB_CLIENT_ID;
+var GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET || require('./secret_info/github_info').GITHUB_CLIENT_SECRET;
 
 var session_info = process.env.SESSION_INFO || require('./secret_info/session_info');
 
