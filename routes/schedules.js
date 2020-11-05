@@ -120,8 +120,15 @@ router.post('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           } else {
             res.redirect('/schedules/' + schedule.scheduleId);
           }
-        })
-      } else {
+        });
+      } 
+      //?delete=1
+      else if(parseInt(req.query.delete) === 1){
+        deleteScheduleAll(req.params.scheduleId, () => {
+          res.redirect('/');
+        });
+      }
+      else {
         const err = new Error('不正なリクエストです');
         err.status = 400
         next(err);
@@ -150,6 +157,23 @@ function createDatesAndRedirect(dates, res, scheduleId){
 
 function parseDates(req) {
   return req.body.dates.trim().split('\n').map((s) => s.trim()).filter((s) => s !== "");
+}
+
+function deleteScheduleAll(scheduleId, done, err){
+  Schedule.destroy({
+    where: {
+      scheduleId: scheduleId
+    }
+  }).then(() => {
+    Dates.destroy({
+      where: {
+        scheduleId: scheduleId
+      }
+    }).then(() => {
+      if (err) return done(err);
+      done();
+    })
+  });
 }
 
 module.exports = router;
