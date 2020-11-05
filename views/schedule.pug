@@ -16,7 +16,7 @@ block content
   - var isMine = parseInt(user.id) === schedule.createdBy
   if isMine
     div
-      a(href=`/schedules/${schedule.scheduleId}/edit`).btn.btn-info.my-3 編集
+      a(href=`/schedules/${schedule.scheduleId}/edit`).btn.btn-primary.my-3 編集
     h3 危険な変更
     button(type="button", data-toggle="modal", data-target="#deleteConfirmation").btn.btn-danger.my-3 削除
     div(tabindex="-1", role="dialog", aria-labelledby="exampleModalCenterTitle", aria-hidden="true")#deleteConfirmation.modal.fade
