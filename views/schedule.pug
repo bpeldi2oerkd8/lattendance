@@ -30,4 +30,5 @@ block content
           div.modal-footer
             button(type="button", data-dismiss="modal").btn.btn-secondary 戻る
             form(method="post", action=`/schedules/${schedule.scheduleId}?delete=1`)
+              input(type="hidden" name="_csrf" value!=csrfToken)
               button(type="submit").btn.btn-danger 削除

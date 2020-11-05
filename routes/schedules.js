@@ -7,12 +7,14 @@ const Dates = require('../models/date');
 const User = require('../models/user');
 const { v4: uuidv4 } = require('uuid');
 const { parse } = require('@babel/core');
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie: true });
 
-router.get('/new', authenticationEnsurer, (req, res, next) => {
-  res.render('new', { user: req.user });
+router.get('/new', authenticationEnsurer, csrfProtection, (req, res, next) => {
+  res.render('new', { user: req.user, csrfToken: req.csrfToken()});
 });
 
-router.post('/', authenticationEnsurer, (req, res, next) => {
+router.post('/', authenticationEnsurer, csrfProtection, (req, res, next) => {
   const scheduleId = uuidv4();
   const updatedAt = new Date();
   Schedule.create({
@@ -27,7 +29,7 @@ router.post('/', authenticationEnsurer, (req, res, next) => {
   });
 });
 
-router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
+router.get('/:scheduleId', authenticationEnsurer, csrfProtection, (req, res, next) => {
   Schedule.findOne({
     include: [{
       model: User,
@@ -49,7 +51,8 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           user: req.user,
           schedule: schedule,
           dates: dates,
-          users: [req.user]
+          users: [req.user],
+          csrfToken: req.csrfToken()
         });
       });
     } else {
@@ -60,7 +63,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
   });
 });
 
-router.get('/:scheduleId/edit', authenticationEnsurer, (req, res, next) => {
+router.get('/:scheduleId/edit', authenticationEnsurer, csrfProtection, (req, res, next) => {
   Schedule.findOne({
     where: {
       scheduleId: req.params.scheduleId
@@ -80,7 +83,8 @@ router.get('/:scheduleId/edit', authenticationEnsurer, (req, res, next) => {
         res.render('edit', {
           user: req.user,
           schedule: schedule,
-          dates: dateString
+          dates: dateString,
+          csrfToken: req.csrfToken()
         });
       });
     } else {
@@ -91,7 +95,7 @@ router.get('/:scheduleId/edit', authenticationEnsurer, (req, res, next) => {
   });
 });
 
-router.post('/:scheduleId', authenticationEnsurer, (req, res, next) => {
+router.post('/:scheduleId', authenticationEnsurer, csrfProtection, (req, res, next) => {
   Schedule.findOne({
     where: {
       scheduleId: req.params.scheduleId
