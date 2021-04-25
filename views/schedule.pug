@@ -7,12 +7,19 @@ block content
     tr
       th 日程
       each user in users
-        th #{user.username}
+        th #{user.userName}
     each date in dates
       tr
         td #{date.date}
         each user in users
-          td 〇
+          - var availability = availabilityMapMap.get(user.userId).get(date.dateId)
+          - var availabilityLabels = ['×', '△', '〇']
+          - var buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success']
+          td
+            if user.isSelf
+              button(class=`availability-toggle-button btn-lg ${buttonStyles[availability]}`) #{availabilityLabels[availability]}
+            else
+              h3 #{availabilityLabels[availability]}
   - var isMine = parseInt(user.id) === schedule.createdBy
   if isMine
     div
