@@ -13,11 +13,15 @@ block content
         td #{date.date}
         each user in users
           - var availability = availabilityMapMap.get(user.userId).get(date.dateId)
-          - var availabilityLabels = ['×', '△', '〇']
+          - var availabilityLabels = ['×', '?', '✓']
           - var buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success']
           td
             if user.isSelf
-              button(class=`availability-toggle-button btn-lg ${buttonStyles[availability]}`) #{availabilityLabels[availability]}
+              button(class=`availability-toggle-button btn-lg ${buttonStyles[availability]}`
+                data-schedule-id=schedule.scheduleId
+                data-user-id=user.userId
+                data-date-id=date.dateId
+                data-availability=availability) #{availabilityLabels[availability]}
             else
               h3 #{availabilityLabels[availability]}
   - var isMine = parseInt(user.id) === schedule.createdBy
