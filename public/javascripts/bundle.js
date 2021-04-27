@@ -107,7 +107,7 @@ copyButton.on('click', function () {
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').select();
   document.execCommand('copy');
   copyButton.text('Copied!');
-  copyButton.attr('distabled', true);
+  copyButton.attr('disabled', true);
   copyButton.removeClass('btn-outline-secondary');
   copyButton.addClass('btn-secondary');
 });
