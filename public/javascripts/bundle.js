@@ -102,6 +102,15 @@ global.jQuery = jquery__WEBPACK_IMPORTED_MODULE_1___default.a;
 
 var url = jquery__WEBPACK_IMPORTED_MODULE_1___default()(location).attr('href');
 jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').val(url);
+var copyButton = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#copy-button');
+copyButton.on('click', function () {
+  jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').select();
+  document.execCommand('copy');
+  copyButton.text('Copied!');
+  copyButton.attr('distabled', true);
+  copyButton.removeClass('btn-outline-secondary');
+  copyButton.addClass('btn-secondary');
+});
 jquery__WEBPACK_IMPORTED_MODULE_1___default()('.availability-toggle-button').each(function (i, e) {
   var button = jquery__WEBPACK_IMPORTED_MODULE_1___default()(e);
   button.on('click', function () {

@@ -7,6 +7,16 @@ import $ from 'jquery';
 const url = $(location).attr('href');
 $('#current-url').val(url);
 
+const copyButton = $('#copy-button');
+copyButton.on('click', () => {
+  $('#current-url').select();
+  document.execCommand('copy');
+  copyButton.text('Copied!');
+  copyButton.attr('distabled', true);
+  copyButton.removeClass('btn-outline-secondary');
+  copyButton.addClass('btn-secondary');
+});
+
 $('.availability-toggle-button').each((i, e) => {
   const button = $(e);
   button.on('click', () => {
