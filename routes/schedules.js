@@ -10,6 +10,7 @@ const csrf = require('csurf');
 const Availability = require('../models/availability');
 const { map } = require('jquery');
 const csrfProtection = csrf({ cookie: true });
+const moment = require('moment-timezone');
 
 router.get('/new', authenticationEnsurer, csrfProtection, (req, res, next) => {
   res.render('new', { user: req.user, csrfToken: req.csrfToken()});
@@ -93,6 +94,8 @@ router.get('/:scheduleId', authenticationEnsurer, csrfProtection, (req, res, nex
             });
           });
 
+          //表示用の更新日時
+          schedule.formattedUpdatedAt = moment(schedule.updatedAt).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm');
           res.render('schedule', {
             user: req.user,
             schedule: schedule,
