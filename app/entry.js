@@ -12,7 +12,7 @@ copyButton.on('click', () => {
   $('#current-url').select();
   document.execCommand('copy');
   copyButton.text('Copied!');
-  copyButton.attr('distabled', true);
+  copyButton.attr('disabled', true);
   copyButton.removeClass('btn-outline-secondary');
   copyButton.addClass('btn-secondary');
 });
