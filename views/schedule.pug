@@ -3,6 +3,13 @@ extends layout
 block content
   h3.my-3 #{schedule.scheduleName}
   h5.my-3 #{schedule.description}
+  br
+  h5.my-3 URLの共有
+  div.input-group.mb-3
+    input(type="text", placeholder="Display URL here", readonly).form-control
+    div.input-group-append
+      button(type="button")#copy-button.btn.btn-outline-secondary Copy
+  br
   table.table.table-hover
     tr
       th 日程
