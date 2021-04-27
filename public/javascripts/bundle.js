@@ -100,6 +100,8 @@ var global = Function('return this;')();
 global.jQuery = jquery__WEBPACK_IMPORTED_MODULE_1___default.a;
 
 
+var url = jquery__WEBPACK_IMPORTED_MODULE_1___default()(location).attr('href');
+jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').val(url);
 jquery__WEBPACK_IMPORTED_MODULE_1___default()('.availability-toggle-button').each(function (i, e) {
   var button = jquery__WEBPACK_IMPORTED_MODULE_1___default()(e);
   button.on('click', function () {
