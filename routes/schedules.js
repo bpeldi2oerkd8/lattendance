@@ -105,15 +105,6 @@ router.get('/:scheduleId', authenticationEnsurer, csrfProtection, (req, res, nex
             csrfToken: req.csrfToken()
           });
         });
-        /*
-        res.render('schedule', {
-          user: req.user,
-          schedule: schedule,
-          dates: dates,
-          users: [req.user],
-          csrfToken: req.csrfToken()
-        });
-        */
       });
     } else {
       const err = new Error('指定された予定は存在しません');

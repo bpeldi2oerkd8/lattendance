@@ -4,6 +4,9 @@ global.jQuery = $;
 import bootstrap from 'bootstrap';
 import $ from 'jquery';
 
+const url = $(location).attr('href');
+$('#current-url').val(url);
+
 $('.availability-toggle-button').each((i, e) => {
   const button = $(e);
   button.on('click', () => {
