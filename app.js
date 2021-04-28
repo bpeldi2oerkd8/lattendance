@@ -7,6 +7,7 @@ var helmet = require('helmet');
 var session = require('express-session');
 var passport = require('passport');
 var GitHubStrategy = require('passport-github2').Strategy;
+var validator = require('validator');
 
 // モデルの読み込み
 var User = require('./models/user');
@@ -106,7 +107,15 @@ app.get('/auth/github/callback',
       }
     }).then((user) => {
       if(user) {
-        res.redirect('/');
+        var loginFrom = req.cookies.loginFrom;
+        var scheduleId = loginFrom ? loginFrom.split('/schedules/')[1] : '';
+        // オープンリダイレクタ脆弱性対策
+        if (loginFrom && scheduleId && validator.isUUID(scheduleId)) {
+          res.clearCookie('loginFrom');
+          res.redirect('/schedules/' + scheduleId);
+        } else {
+          res.redirect('/');
+        }
       } else {
         res.redirect('/slack-id-register');
       }
