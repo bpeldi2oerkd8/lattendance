@@ -4,14 +4,17 @@ global.jQuery = $;
 import bootstrap from 'bootstrap';
 import $ from 'jquery';
 
+//navbar固定時の開始位置下げ
 $(window).on('load resize', () => {
   const height = $('.navbar').height();
   $('body').css('padding-top', height*1.5);
 });
 
+//現在位置のURL
 const url = $(location).attr('href');
 $('#current-url').val(url);
 
+//URLコピーボタン
 const copyButton = $('#copy-button');
 copyButton.on('click', () => {
   $('#current-url').select();
@@ -22,6 +25,7 @@ copyButton.on('click', () => {
   copyButton.addClass('btn-secondary');
 });
 
+//出欠ボタン
 $('.availability-toggle-button').each((i, e) => {
   const button = $(e);
   button.on('click', () => {
