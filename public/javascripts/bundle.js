@@ -99,13 +99,16 @@ __webpack_require__.r(__webpack_exports__);
 var global = Function('return this;')();
 global.jQuery = jquery__WEBPACK_IMPORTED_MODULE_1___default.a;
 
+ //navbar固定時の開始位置下げ
 
 jquery__WEBPACK_IMPORTED_MODULE_1___default()(window).on('load resize', function () {
   var height = jquery__WEBPACK_IMPORTED_MODULE_1___default()('.navbar').height();
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').css('padding-top', height * 1.5);
-});
+}); //現在位置のURL
+
 var url = jquery__WEBPACK_IMPORTED_MODULE_1___default()(location).attr('href');
-jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').val(url);
+jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').val(url); //URLコピーボタン
+
 var copyButton = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#copy-button');
 copyButton.on('click', function () {
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').select();
@@ -114,7 +117,8 @@ copyButton.on('click', function () {
   copyButton.attr('disabled', true);
   copyButton.removeClass('btn-outline-secondary');
   copyButton.addClass('btn-secondary');
-});
+}); //出欠ボタン
+
 jquery__WEBPACK_IMPORTED_MODULE_1___default()('.availability-toggle-button').each(function (i, e) {
   var button = jquery__WEBPACK_IMPORTED_MODULE_1___default()(e);
   button.on('click', function () {
