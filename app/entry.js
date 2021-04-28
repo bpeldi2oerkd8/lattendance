@@ -4,6 +4,11 @@ global.jQuery = $;
 import bootstrap from 'bootstrap';
 import $ from 'jquery';
 
+$(window).on('load resize', () => {
+  const height = $('.navbar').height();
+  $('body').css('padding-top', height*1.5);
+});
+
 const url = $(location).attr('href');
 $('#current-url').val(url);
 

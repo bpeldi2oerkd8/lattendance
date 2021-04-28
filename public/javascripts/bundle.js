@@ -100,6 +100,10 @@ var global = Function('return this;')();
 global.jQuery = jquery__WEBPACK_IMPORTED_MODULE_1___default.a;
 
 
+jquery__WEBPACK_IMPORTED_MODULE_1___default()(window).on('load resize', function () {
+  var height = jquery__WEBPACK_IMPORTED_MODULE_1___default()('.navbar').height();
+  jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').css('padding-top', height * 1.5);
+});
 var url = jquery__WEBPACK_IMPORTED_MODULE_1___default()(location).attr('href');
 jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').val(url);
 var copyButton = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#copy-button');
