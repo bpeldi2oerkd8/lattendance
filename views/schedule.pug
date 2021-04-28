@@ -29,24 +29,31 @@ block content
     input(type="text", value="", readonly)#current-url.form-control
     div.input-group-append
       button(type="button")#copy-button.btn.btn-outline-secondary Copy
-  table.table.table-hover
-    tr
-      th 日程
-      each user in users
-        th #{user.userName}
-    each date in dates
-      tr
-        td #{date.date}
-        each user in users
-          - var availability = availabilityMapMap.get(user.userId).get(date.dateId)
-          - var availabilityLabels = ['×', '?', '✓']
-          - var buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success']
-          td
-            if user.isSelf
-              button(class=`availability-toggle-button btn-lg ${buttonStyles[availability]}`
-                data-schedule-id=schedule.scheduleId
-                data-user-id=user.userId
-                data-date-id=date.dateId
-                data-availability=availability) #{availabilityLabels[availability]}
-            else
-              h3 #{availabilityLabels[availability]}
+  div.table-responsive
+    table.table.table-bordered.table-hover
+      thead
+        tr
+          th
+            div.text-center 日程
+          each user in users
+            th
+              div.text-center #{user.userName}
+      each date in dates
+        tbody
+          tr
+            td 
+              div.text-center #{date.date}
+            each user in users
+              - var availability = availabilityMapMap.get(user.userId).get(date.dateId)
+              - var availabilityLabels = ['×', '?', '✓']
+              - var buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success']
+              td
+                div.text-center
+                  if user.isSelf
+                    button(class=`availability-toggle-button btn-lg ${buttonStyles[availability]}`
+                      data-schedule-id=schedule.scheduleId
+                      data-user-id=user.userId
+                      data-date-id=date.dateId
+                      data-availability=availability) #{availabilityLabels[availability]}
+                  else
+                    button(class=`btn-lg ${buttonStyles[availability]}`, disabled) #{availabilityLabels[availability]}

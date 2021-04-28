@@ -7,16 +7,18 @@ block content
   if user
     h3.my-3 <strong>#{user.username}</strong>さんの作った予定一覧
     div
-      a(href="/schedules/new").btn.btn-primary.my-3 予定の作成
+      a(href="/schedules/new").btn.btn-primary.mb-3 予定の作成
     - var hasSchedule = schedules.length > 0
     if hasSchedule
       table.table.table-hover
-        tr
-          th 予定名
-          th 更新日時
-        each schedule in schedules
+        thead
           tr
-            td 
-              a(href=`/schedules/${schedule.scheduleId}`) #{schedule.scheduleName}
-            td #{schedule.formattedUpdatedAt}
+            th 予定名
+            th 更新日時
+        each schedule in schedules
+          tbody
+            tr
+              td 
+                a(href=`/schedules/${schedule.scheduleId}`) #{schedule.scheduleName}
+              td #{schedule.formattedUpdatedAt}
 
