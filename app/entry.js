@@ -40,9 +40,14 @@ $('.availability-toggle-button').each((i, e) => {
       { availability: nextAvailability },
       data => {
         button.data('availability', data.availability);
-        const availabilityLabels = ['×', '?', '✓'];
-        button.text(availabilityLabels[data.availability]);
+        const availabilityLabels = ['fa-times', 'fa-question', 'fa-check'];
+        
+        //iconの変更
+        const icon = button.children('i');
+        icon.removeClass('fa-times fa-question fa-check');
+        icon.addClass(availabilityLabels[data.availability]);
 
+        //ボタンの色変更
         const buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success'];
         button.removeClass('btn-danger btn-secondary btn-success');
         button.addClass(buttonStyles[data.availability]);
