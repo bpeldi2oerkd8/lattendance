@@ -17,7 +17,7 @@ $('#current-url').val(url);
 //URLコピーボタン
 const copyButton = $('#copy-button');
 copyButton.on('click', () => {
-  $('#current-url').select();
+  $('#current-url').trigger('select');
   document.execCommand('copy');
   copyButton.text('Copied!');
   copyButton.attr('disabled', true);
