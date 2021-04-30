@@ -131,8 +131,12 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()('.availability-toggle-button').eac
       availability: nextAvailability
     }, function (data) {
       button.data('availability', data.availability);
-      var availabilityLabels = ['×', '?', '✓'];
-      button.text(availabilityLabels[data.availability]);
+      var availabilityLabels = ['fa-times', 'fa-question', 'fa-check']; //iconの変更
+
+      var icon = button.children('i');
+      icon.removeClass('fa-times fa-question fa-check');
+      icon.addClass(availabilityLabels[data.availability]); //ボタンの色変更
+
       var buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success'];
       button.removeClass('btn-danger btn-secondary btn-success');
       button.addClass(buttonStyles[data.availability]);

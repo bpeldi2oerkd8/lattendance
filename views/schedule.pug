@@ -45,7 +45,7 @@ block content
               div.text-center #{date.date}
             each user in users
               - var availability = availabilityMapMap.get(user.userId).get(date.dateId)
-              - var availabilityLabels = ['×', '?', '✓']
+              - var availabilityLabels = ['fa-times', 'fa-question', 'fa-check']
               - var buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success']
               td
                 div.text-center
@@ -54,6 +54,8 @@ block content
                       data-schedule-id=schedule.scheduleId
                       data-user-id=user.userId
                       data-date-id=date.dateId
-                      data-availability=availability) #{availabilityLabels[availability]}
+                      data-availability=availability)
+                        i(class=`fas ${availabilityLabels[availability]}`)
                   else
-                    button(class=`btn-lg ${buttonStyles[availability]}`, disabled) #{availabilityLabels[availability]}
+                    button(class=`btn-lg ${buttonStyles[availability]}`, disabled)
+                      i(class=`fas ${availabilityLabels[availability]}`)
