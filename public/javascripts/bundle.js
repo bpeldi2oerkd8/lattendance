@@ -111,7 +111,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').val(url); //URLコ
 
 var copyButton = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#copy-button');
 copyButton.on('click', function () {
-  jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').select();
+  jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').trigger('select');
   document.execCommand('copy');
   copyButton.text('Copied!');
   copyButton.attr('disabled', true);
