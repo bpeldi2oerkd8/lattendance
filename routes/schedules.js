@@ -7,7 +7,10 @@ const Dates = require('../models/date');
 const User = require('../models/user');
 const { v4: uuidv4 } = require('uuid');
 const csrf = require('csurf');
+const Availability = require('../models/availability');
+const { map } = require('jquery');
 const csrfProtection = csrf({ cookie: true });
+const moment = require('moment-timezone');
 
 router.get('/new', authenticationEnsurer, csrfProtection, (req, res, next) => {
   res.render('new', { user: req.user, csrfToken: req.csrfToken()});
@@ -46,12 +49,61 @@ router.get('/:scheduleId', authenticationEnsurer, csrfProtection, (req, res, nex
         },
         order: [['dateId', 'ASC']]
       }).then((dates) => {
-        res.render('schedule', {
-          user: req.user,
-          schedule: schedule,
-          dates: dates,
-          users: [req.user],
-          csrfToken: req.csrfToken()
+        //ここから
+        Availability.findAll({
+          include: [
+            {
+              model: User,
+              attributes: ['userId', 'userName']
+            }
+          ],
+          where: {scheduleId: schedule.scheduleId},
+          order: [[User, 'userName', 'ASC'], ['dateId', 'ASC']]
+        }).then((availabilities) => {
+          //key: userId, value: Map(key: dateId, value: availability)
+          const availabilityMapMap = new Map();
+          availabilities.forEach((a) => {
+            const availabilityMap = availabilityMapMap.get(a.user.userId) || new Map();
+            availabilityMap.set(a.dateId, a.availability);
+            availabilityMapMap.set(a.user.userId, availabilityMap);
+          });
+
+          //ユーザー情報のMap
+          //key: userId, value: user(Object)
+          const userMap = new Map();
+          userMap.set(parseInt(req.user.id), {
+            isSelf: true,
+            userId: parseInt(req.user.id),
+            userName: req.user.username
+          });
+          availabilities.forEach((a) => {
+            userMap.set(a.user.userId, {
+              isSelf: parseInt(req.user.id) === a.user.userId,
+              userId: a.user.userId,
+              userName: a.user.userName
+            });
+          });
+
+          const users = Array.from(userMap).map((keyValue) => keyValue[1]);
+          users.forEach((u) => {
+            dates.forEach((d) => {
+              const map = availabilityMapMap.get(u.userId) || new Map();
+              const a = map.get(d.dateId) || 0;
+              map.set(d.dateId, a);
+              availabilityMapMap.set(u.userId, map);
+            });
+          });
+
+          //表示用の更新日時
+          schedule.formattedUpdatedAt = moment(schedule.updatedAt).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm');
+          res.render('schedule', {
+            user: req.user,
+            schedule: schedule,
+            dates: dates,
+            users: users,
+            availabilityMapMap: availabilityMapMap,
+            csrfToken: req.csrfToken()
+          });
         });
       });
     } else {

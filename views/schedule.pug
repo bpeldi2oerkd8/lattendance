@@ -1,34 +1,61 @@
 extends layout
 
 block content
-  h3.my-3 #{schedule.scheduleName}
-  h5.my-3 #{schedule.description}
-  table.table.table-hover
-    tr
-      th 日程
-      each user in users
-        th #{user.username}
-    each date in dates
-      tr
-        td #{date.date}
-        each user in users
-          td 〇
-  - var isMine = parseInt(user.id) === schedule.createdBy
-  if isMine
-    div
-      a(href=`/schedules/${schedule.scheduleId}/edit`).btn.btn-primary.my-3 編集
-    h3 危険な変更
-    button(type="button", data-toggle="modal", data-target="#deleteConfirmation").btn.btn-danger.my-3 削除
-    div(tabindex="-1", role="dialog", aria-labelledby="exampleModalCenterTitle", aria-hidden="true")#deleteConfirmation.modal.fade
-      div(role="document").modal-dialog.modal-dialog-centered
-        div.modal-content
-          div.modal-header
-            h5#exampleModalCenterTitle.modal-title 確認
-            button.close(type="button", data-dismiss="modal", aria-label="Close")
-              span(aria-hidden="true") &times;
-          div.modal-body 本当に削除しますか？
-          div.modal-footer
-            button(type="button", data-dismiss="modal").btn.btn-secondary 戻る
-            form(method="post", action=`/schedules/${schedule.scheduleId}?delete=1`)
-              input(type="hidden" name="_csrf" value!=csrfToken)
-              button(type="submit").btn.btn-danger 削除
+  div.card.my-3.border.border-dark
+    div.card-body
+      h1.card-title #{schedule.scheduleName}
+      h5.card-text #{schedule.description}
+      - var isMine = parseInt(user.id) === schedule.createdBy
+      if isMine
+        div.pt-3
+          button(type="button", data-toggle="modal", data-target="#deleteConfirmation").btn.btn-danger.mr-3 削除
+          div(tabindex="-1", role="dialog", aria-labelledby="exampleModalCenterTitle", aria-hidden="true")#deleteConfirmation.modal.fade
+            div(role="document").modal-dialog.modal-dialog-centered
+              div.modal-content
+                div.modal-header
+                  h5#exampleModalCenterTitle.modal-title 確認
+                  button.close(type="button", data-dismiss="modal", aria-label="Close")
+                    span(aria-hidden="true") &times;
+                div.modal-body 本当に削除しますか？<br>この操作は取り消せません。
+                div.modal-footer
+                  button(type="button", data-dismiss="modal").btn.btn-secondary 戻る
+                  form(method="post", action=`/schedules/${schedule.scheduleId}?delete=1`)
+                    input(type="hidden" name="_csrf" value!=csrfToken)
+                    button(type="submit").btn.btn-danger 削除
+          a(href=`/schedules/${schedule.scheduleId}/edit`).btn.btn-primary.mr-3 編集
+    div.card-footer.text-muted 更新日時: #{schedule.formattedUpdatedAt}
+  h5.my-3 URLの共有
+  div.input-group.mb-3
+    input(type="text", value="", readonly)#current-url.form-control
+    div.input-group-append
+      button(type="button")#copy-button.btn.btn-outline-secondary Copy
+  div.table-responsive
+    table.table.table-bordered.table-hover
+      thead
+        tr
+          th
+            div.text-center 日程
+          each user in users
+            th
+              div.text-center #{user.userName}
+      each date in dates
+        tbody
+          tr
+            td 
+              div.text-center #{date.date}
+            each user in users
+              - var availability = availabilityMapMap.get(user.userId).get(date.dateId)
+              - var availabilityLabels = ['fa-times', 'fa-question', 'fa-check']
+              - var buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success']
+              td
+                div.text-center
+                  if user.isSelf
+                    button(class=`availability-toggle-button btn-lg ${buttonStyles[availability]}`
+                      data-schedule-id=schedule.scheduleId
+                      data-user-id=user.userId
+                      data-date-id=date.dateId
+                      data-availability=availability)
+                        i(class=`fas ${availabilityLabels[availability]}`)
+                  else
+                    button(class=`btn-lg ${buttonStyles[availability]}`, disabled)
+                      i(class=`fas ${availabilityLabels[availability]}`)

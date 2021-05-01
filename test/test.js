@@ -3,10 +3,15 @@ const request = require('supertest');
 const app = require('../app');
 const passportStub = require('passport-stub');
 
+const User = require('../models/user');
+const Schedule = require('../models/schedule');
+const Date = require('../models/date');
+const Availability = require('../models/availability');
+
 describe('/', () => {
   beforeAll(() => {
     passportStub.install(app);
-    passportStub.login({ username: 'testuser' });
+    passportStub.login({ id: 0, username: 'testuser' });
   });
 
   afterAll(() => {
@@ -22,6 +27,67 @@ describe('/', () => {
       .expect(200);
   });
 });
+
+/*
+describe('/schedules/:scheduleId/users/:userId/dates/:dateId', () => {
+  beforeAll(() => {
+    passportStub.install(app);
+    passportStub.login({ id: 0, username: 'testuser' });
+  });
+
+  afterAll(() => {
+    passportStub.logout();
+    passportStub.uninstall(app);
+  });
+
+  test('出欠が更新できる', (done) => {
+    User.upsert({ userId: 0, userName: 'testuser', slackId:'TEST0000000' }).then(() => {
+      request(app)
+        .post('/schedules')
+        .send({ scheduleName: '予定1', description: '説明1', dates: '1/1' })
+        .end((err, res) => {
+          const createdSchedulePath = res.headers.location;
+          const scheduleId = createdSchedulePath.split('/schedules/')[1];
+          Date.findOne({
+            where: { scheduleId: scheduleId }
+          }).then((date) => {
+            //ここから更新のテスト
+            const userId = 0;
+            request(app)
+              .post(`/schedules/${scheduleId}/users/${userId}/dates/${date.dateId}`)
+              .send({ availability: 2 }) // 出席に更新
+              .expect('{"status":"OK","availability":2}')
+              .end((err, res) => { deleteScheduleAggregate(scheduleId, done, err); });
+          });
+        });
+    });
+  });
+});
+
+function deleteScheduleAggregate(scheduleId, done, err) {
+  Availability.findAll({
+    where: { scheduleId: scheduleId }
+  }).then((availabilities) => {
+    const promises = availabilities.map((a) => { return a.destroy(); });
+    Promise.all(promises).then(() => {
+      Date.findAll({
+        where: { scheduleId: scheduleId }
+      }).then((dates) => {
+        const promises = dates.map((d) => { return d.destroy(); });
+        Promise.all(promises).then(() => {
+          Schedule.findByPk(scheduleId).then((s) => {
+            s.destroy().then(() => {
+              if (err) return done(err);
+              done();
+            });
+          });
+        });
+      });
+    });
+  });
+}
+*/
+
 describe('/login', () => {
   test('ログインボタンが含まれる', () => {
     return request(app)
