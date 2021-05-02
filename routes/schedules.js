@@ -11,6 +11,7 @@ const Availability = require('../models/availability');
 const { map } = require('jquery');
 const csrfProtection = csrf({ cookie: true });
 const moment = require('moment-timezone');
+const { resolvePlugin } = require('@babel/core');
 
 router.get('/new', authenticationEnsurer, csrfProtection, (req, res, next) => {
   res.render('new', { user: req.user, csrfToken: req.csrfToken()});
@@ -26,8 +27,8 @@ router.post('/', authenticationEnsurer, csrfProtection, (req, res, next) => {
     createdBy: req.user.id,
     updatedAt: updatedAt
   }).then((schedule) => {
-    const dates = parseDates(req);
-    createDatesAndRedirect(dates, res, scheduleId);
+    const dates = parseDates(req.body.dates);
+    createDatesAndRedirect(dates, scheduleId, res);
   });
 });
 
@@ -163,14 +164,22 @@ router.post('/:scheduleId', authenticationEnsurer, csrfProtection, (req, res, ne
           createdBy: req.user.id,
           updatedAt: updatedAt
         }).then((schedule) => {
-          const dates = parseDates(req);
-          if(dates) {
-            Dates.destroy({
-              where: {
-                scheduleId: schedule.scheduleId
-              }
+          const newDates = parseDates(req.body.dates);
+          if(newDates) {
+            Availability.findAll({
+              where: { scheduleId: schedule.scheduleId }
+            }).then((availabilities) => {
+              const promises = availabilities.map((a) => { return a.destroy(); });
+              return Promise.all(promises);
             }).then(() => {
-              createDatesAndRedirect(dates, res, schedule.scheduleId);
+              return Dates.findAll({
+                where: { scheduleId: schedule.scheduleId }
+              });
+            }).then((previousDates) => {
+              const promises = previousDates.map((d) => { return d.destroy(); });
+              return Promise.all(promises);
+            }).then(() => {
+              createDatesAndRedirect(newDates, schedule.scheduleId, res);
             });
           } else {
             res.redirect('/schedules/' + schedule.scheduleId);
@@ -200,7 +209,7 @@ function isMine(req, schedule)  {
   return schedule && parseInt(schedule.createdBy) === parseInt(req.user.id);
 }
 
-function createDatesAndRedirect(dates, res, scheduleId){
+function createDatesAndRedirect(dates, scheduleId, res){
   const dateData = dates.map((d) => { return {
     date: d,
     scheduleId: scheduleId
@@ -210,8 +219,8 @@ function createDatesAndRedirect(dates, res, scheduleId){
   });
 }
 
-function parseDates(req) {
-  return req.body.dates.trim().split('\n').map((s) => s.trim()).filter((s) => s !== "");
+function parseDates(dates) {
+  return dates.trim().split('\n').map((d) => d.trim()).filter((d) => d !== "");
 }
 
 function deleteScheduleAll(scheduleId, done, err){
@@ -233,22 +242,6 @@ function deleteScheduleAll(scheduleId, done, err){
     if (err) return done(err);
     done();
   });
-  /*
-  Schedule.destroy({
-    where: {
-      scheduleId: scheduleId
-    }
-  }).then(() => {
-    Dates.destroy({
-      where: {
-        scheduleId: scheduleId
-      }
-    }).then(() => {
-      if (err) return done(err);
-      done();
-    })
-  });
-  */
 }
 
 module.exports = router;
