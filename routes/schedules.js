@@ -215,6 +215,25 @@ function parseDates(req) {
 }
 
 function deleteScheduleAll(scheduleId, done, err){
+  Availability.findAll({
+    where: { scheduleId: scheduleId }
+  }).then((availabilities) => {
+    const promises = availabilities.map((a) => { return a.destroy(); });
+    return Promise.all(promises);
+  }).then(() => {
+    return Dates.findAll({
+      where: { scheduleId: scheduleId }
+    });
+  }).then((dates) => {
+    const promises = dates.map((d) => { return d.destroy(); });
+    return Promise.all(promises);
+  }).then(() => {
+    return Schedule.findByPk(scheduleId).then((s) => { return s.destroy(); });
+  }).then(() => {
+    if (err) return done(err);
+    done();
+  });
+  /*
   Schedule.destroy({
     where: {
       scheduleId: scheduleId
@@ -229,6 +248,7 @@ function deleteScheduleAll(scheduleId, done, err){
       done();
     })
   });
+  */
 }
 
 module.exports = router;
