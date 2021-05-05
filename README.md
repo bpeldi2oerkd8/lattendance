@@ -41,22 +41,38 @@ GitHub OAuthを用いたログイン機能があります。
 GitHubのアカウントがあれば、誰でもログイン可能です。  
 ログアウトは上のナビゲーションバーの自分のユーザーの部分をクリックすると、ログアウトボタンが出てきます。
 
+![top page](https://user-images.githubusercontent.com/64352857/117101549-688fc000-adb1-11eb-8e88-247d52948406.jpg)
+![login_page](https://user-images.githubusercontent.com/64352857/117101655-ab519800-adb1-11eb-975a-d51ea1c312a1.jpg)
+![OAuth_page](https://user-images.githubusercontent.com/64352857/117101710-c6bca300-adb1-11eb-9aac-b381691de5b3.jpg)
+![pres_logout_button](https://user-images.githubusercontent.com/64352857/117101771-e653cb80-adb1-11eb-9467-22d9dad8ab31.jpg)
+
 ### 予定一覧表示機能
 ログインしている場合、ログイン済みのユーザーが作成した予定の一覧が更新日時の近い順に表示されます。  
-それぞれの予定をクリックすると、その予定のページに移動します。
+それぞれの予定をクリックすると、その予定のページに移動します。  
+
+![user_page](https://user-images.githubusercontent.com/64352857/117101828-05eaf400-adb2-11eb-83ec-3c54399bb276.jpg)
 
 ### 予定作成機能
 新規の予定を作成できます。  
-予定名と説明、日程を改行区切りで入れることで予定の作成が可能です。
+予定名と説明、日程を改行区切りで入れることで予定の作成が可能です。  
+
+![schedule_making_page](https://user-images.githubusercontent.com/64352857/117101888-24e98600-adb2-11eb-9204-d0d9dde04ced.jpg)
 
 ### 予定削除・編集機能
 削除・編集ボタンから予定の削除・編集ができます。  
-編集後、出欠情報はリセットされます。
+削除・編集ができるのは、予定の作成者のみです。  
+編集後、出欠情報はリセットされます。  
+
+![schedule_page](https://user-images.githubusercontent.com/64352857/117101953-3e8acd80-adb2-11eb-9f73-8450e467c870.jpg)
+![delete_page](https://user-images.githubusercontent.com/64352857/117101969-45194500-adb2-11eb-8d58-5b3887e80f9c.jpg)
+![edit_page](https://user-images.githubusercontent.com/64352857/117101975-49ddf900-adb2-11eb-82e1-79adeadb1afa.jpg)
 
 ### 出欠登録機能
 ログインしているユーザーのみ、自らの出欠の登録ができます。  
 チェックが出席、はてなが不明、ばつが欠席を示しています。  
-他のユーザーの出欠については閲覧のみ可能です。
+他のユーザーの出欠については閲覧のみ可能です。  
+
+![attendance_list](https://user-images.githubusercontent.com/64352857/117102229-dc7e9800-adb2-11eb-94f5-40ee506b61d7.jpg)
 
 ### URL共有機能
 自分が作成した予定のURLを他の人に共有することができます。  
