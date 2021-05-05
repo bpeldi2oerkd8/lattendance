@@ -39,7 +39,7 @@ git push heroku main:master
 ### ログイン・ログアウト機能
 GitHub OAuthを用いたログイン機能があります。  
 GitHubのアカウントがあれば、誰でもログイン可能です。  
-ログアウトは上のナビゲーションバーの自分のユーザーの部分をクリックすると、ログアウトボタンが出てきます。
+ログアウトは上のナビゲーションバーの自分のユーザー名の部分をクリックすると、ログアウトボタンが出てきます。
 
 ![top page](https://user-images.githubusercontent.com/64352857/117101549-688fc000-adb1-11eb-8e88-247d52948406.jpg)
 ![login_page](https://user-images.githubusercontent.com/64352857/117101655-ab519800-adb1-11eb-975a-d51ea1c312a1.jpg)
