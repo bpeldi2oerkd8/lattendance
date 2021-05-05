@@ -39,7 +39,7 @@ git push heroku main:master
 ### ログイン・ログアウト機能
 GitHub OAuthを用いたログイン機能があります。  
 GitHubのアカウントがあれば、誰でもログイン可能です。  
-ログアウトは上のナビゲーションバーの自分のユーザーの部分をクリックすると、ログアウトボタンが出てきます。
+ログアウトは上のナビゲーションバーの自分のユーザー名の部分をクリックすると、ログアウトボタンが出てきます。
 
 ![top page](https://user-images.githubusercontent.com/64352857/117101549-688fc000-adb1-11eb-8e88-247d52948406.jpg)
 ![login_page](https://user-images.githubusercontent.com/64352857/117101655-ab519800-adb1-11eb-975a-d51ea1c312a1.jpg)
@@ -77,7 +77,9 @@ GitHubのアカウントがあれば、誰でもログイン可能です。
 ### URL共有機能
 自分が作成した予定のURLを他の人に共有することができます。  
 コピーボタンは1度しか押せません。  
-再度押したい場合はリロードしてください。
+再度押したい場合はリロードしてください。  
+
+https://user-images.githubusercontent.com/64352857/117112494-186e2900-adc4-11eb-81b0-6d8e1d1267f8.mp4
 
 ## 推奨環境
 レスポンシブ対応です。
