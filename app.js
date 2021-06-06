@@ -16,7 +16,7 @@ var Availability = require('./models/availability');
 var Dates = require('./models/date');
 User.sync().then(() => {
   Schedule.belongsTo(User, {foreignKey: 'createdBy'});
-  Schedule.sync();
+  Schedule.sync({ alter: true });
   Availability.belongsTo(User, {foreignKey: 'userId'});
   Dates.sync().then(() => {
     Availability.belongsTo(Dates, {foreignKey: 'dateId'});
@@ -68,6 +68,7 @@ var logoutRouter = require('./routes/logout');
 var slackIdRegisterRouter = require('./routes/slack-id-register');
 var schedulesRouter = require('./routes/schedules');
 var availabilitiesRouter = require('./routes/availabilities');
+var availabilities2Router = require('./routes/v1/availabilities2');
 
 var app = express();
 app.use(helmet());
@@ -92,6 +93,7 @@ app.use('/logout', logoutRouter);
 app.use('/slack-id-register', slackIdRegisterRouter);
 app.use('/schedules', schedulesRouter);
 app.use('/schedules', availabilitiesRouter);
+app.use('/api/v1/schedules', availabilities2Router);
 
 app.get('/auth/github',
   passport.authenticate('github', { scope: ['user:email'] }),

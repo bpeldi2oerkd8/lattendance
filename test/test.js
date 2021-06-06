@@ -106,3 +106,24 @@ describe('/logout', () => {
       .expect(302);
   });
 });
+
+describe('/api/v1/schedules', () => {
+  beforeAll(() => {
+    passportStub.install(app);
+    passportStub.login({ id: 0, username: 'testuser' });
+  });
+
+  afterAll(() => {
+    passportStub.logout();
+    passportStub.uninstall(app);
+  });
+
+  test('出欠の更新が正しくできる', () => {
+    return request(app)
+      .post('/api/v1/schedules/ROOM0000000/users/SLACK000000/dates/2011-01-12')
+      .send({ availability: 2 })
+      .end((err, res) => {
+
+      });
+  });
+})

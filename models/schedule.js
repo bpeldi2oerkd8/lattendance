@@ -25,6 +25,11 @@ const Schedule = loader.database.define(
     updatedAt: {
       type: Sequelize.DATE,
       allowNull: false
+    },
+    //追加
+    roomId: {
+      type: Sequelize.STRING,
+      allowNull: true
     }
   },
   {
@@ -32,7 +37,7 @@ const Schedule = loader.database.define(
     timestamps: false,
     indexes: [
       {
-        fields: ['createdBy']
+        fields: ['createdBy', 'roomId']
       }
     ]
   }
