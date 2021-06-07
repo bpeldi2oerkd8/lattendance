@@ -28,9 +28,10 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
           .then((schedule) => {
             resolve(schedule.scheduleId);
           });
+        } else {
+          reject('正しいルームIDを入力してください');
         }
-
-        reject('正しいルームIDを入力してください');
+        
       });
     };
 
@@ -46,9 +47,10 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
           .then((user) => {
             resolve(user.userId);
           });
+        } else {
+          reject('正しいSlackIDを入力してください');
         }
 
-        reject('正しいSlackIDを入力してください');
       });
     };
 
@@ -70,9 +72,10 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
           .then((d) => {
             resolve(d.dateId);
           });
+        } else {
+          reject('正しい日付を入力してください');
         }
 
-        reject('正しい日付を入力してください');
       });
     };
 
@@ -115,3 +118,5 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
 );
 
 // 出席の確認
+
+module.exports = router;

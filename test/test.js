@@ -111,7 +111,7 @@ describe('/logout', () => {
 
 describe('/api/v1/schedules', () => {
 
-  test('出欠の更新が正しくできる', (done) => {
+  test('出欠の更新が正しくできる', () => {
     const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
 
     const registerUser = () => {
@@ -145,25 +145,42 @@ describe('/api/v1/schedules', () => {
     
     const registerDates = () => {
       return new Promise((resolve) => {
-        Dates.upsert({
-          dateId: 0,
+        Dates.create({
           date: '1/12',
           scheduleId: scheduleId
         })
-        .then(() => {
-          resolve();
+        .then((d) => {
+          resolve(d.dateId);
         })
       });
     };
 
     Promise.all([registerSchedule(), registerUser(), registerDates()])
-    .then(() => {
+    .then((result) => {
       request(app)
       .post('/api/v1/schedules/ROOM0000000/users/SLACK000000/dates/2011-01-12')
       .send({ availability: 2 })
-      .expect(`{"status":"OK","data":{"scheduleId":${scheduleId},"userId":0,"dateId":0,"availability":2}`)
+      .expect(`{"status":"OK","data":{"scheduleId":${scheduleId},"userId":0,"dateId":${result[2]},"availability":2}`)
       .end((err, res) => {
-        deleteScheduleAll(scheduleId, done, err);
+        deleteScheduleAll(scheduleId, () => {
+          User.destroy({
+            where: {
+              userId: 0,
+              userName: 'testuser',
+              slackId: 'SLACK000000'
+            }
+          });
+        });
+        // deleteScheduleAll(scheduleId, done, err)
+        // .then(() => {
+        //   User.destroy({
+        //     where: {
+        //       userId: 0,
+        //       userName: 'testuser',
+        //       slackId: 'SLACK000000'
+        //     }
+        //   });
+        // });
       });
     });
   });
