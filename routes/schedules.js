@@ -244,4 +244,6 @@ function deleteScheduleAll(scheduleId, done, err){
   });
 }
 
+router.deleteScheduleAll = deleteScheduleAll;
+
 module.exports = router;

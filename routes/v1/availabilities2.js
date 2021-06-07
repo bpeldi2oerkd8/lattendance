@@ -10,7 +10,6 @@ const validator = require('validator');
 // 出欠の更新
 router.post('/:roomId/users/:slackId/dates/:dateString',
   (req, res, next) => {
-    //ここに処理
     const roomId = req.params.roomId;
     const slackId = req.params.slackId;
     const dateString = req.params.dateString; //形式 (YYYY-MM-DD)
@@ -60,7 +59,7 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
           format: 'YYYY-MM-DD'
         })) {
           const dateData = dateString.split('-');
-          let date = dateData[1] + '月' + dateData[2] + '日';
+          let date = dateData[1] + '/' + dateData[2];
           date = date.charAt(0) === '0' ? date.substr(1) : date;
           Dates.findOne({
             where: {

@@ -5,8 +5,10 @@ const passportStub = require('passport-stub');
 
 const User = require('../models/user');
 const Schedule = require('../models/schedule');
-const Date = require('../models/date');
+const Dates = require('../models/date');
 const Availability = require('../models/availability');
+
+const deleteScheduleAll = require('../routes/schedules').deleteScheduleAll;
 
 describe('/', () => {
   beforeAll(() => {
@@ -108,22 +110,61 @@ describe('/logout', () => {
 });
 
 describe('/api/v1/schedules', () => {
-  beforeAll(() => {
-    passportStub.install(app);
-    passportStub.login({ id: 0, username: 'testuser' });
-  });
 
-  afterAll(() => {
-    passportStub.logout();
-    passportStub.uninstall(app);
-  });
+  test('出欠の更新が正しくできる', (done) => {
+    const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
 
-  test('出欠の更新が正しくできる', () => {
-    return request(app)
+    const registerUser = () => {
+      return new Promise((resolve) => {
+        User.upsert({
+          userId: 0,
+          userName: 'testuser',
+          slackId: 'SLACK000000'
+        })
+        .then(() => {
+          resolve();
+        });
+      });
+    };
+
+    const registerSchedule = () => {
+      return new Promise((resolve) => {
+        Schedule.upsert({
+          scheduleId: scheduleId,
+          scheduleName: 'testschedule',
+          description: 'This is the test schedule.',
+          createdBy: 0,
+          updatedAt: new Date(),
+          roomId: 'ROOM0000000'
+        })
+        .then(() => {
+          resolve();
+        });
+      });
+    };
+    
+    const registerDates = () => {
+      return new Promise((resolve) => {
+        Dates.upsert({
+          dateId: 0,
+          date: '1/12',
+          scheduleId: scheduleId
+        })
+        .then(() => {
+          resolve();
+        })
+      });
+    };
+
+    Promise.all([registerSchedule(), registerUser(), registerDates()])
+    .then(() => {
+      request(app)
       .post('/api/v1/schedules/ROOM0000000/users/SLACK000000/dates/2011-01-12')
       .send({ availability: 2 })
+      .expect(`{"status":"OK","data":{"scheduleId":${scheduleId},"userId":0,"dateId":0,"availability":2}`)
       .end((err, res) => {
-
+        deleteScheduleAll(scheduleId, done, err);
       });
+    });
   });
-})
+});
