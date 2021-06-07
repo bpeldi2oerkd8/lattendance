@@ -171,16 +171,6 @@ describe('/api/v1/schedules', () => {
             }
           });
         });
-        // deleteScheduleAll(scheduleId, done, err)
-        // .then(() => {
-        //   User.destroy({
-        //     where: {
-        //       userId: 0,
-        //       userName: 'testuser',
-        //       slackId: 'SLACK000000'
-        //     }
-        //   });
-        // });
       });
     });
   });
