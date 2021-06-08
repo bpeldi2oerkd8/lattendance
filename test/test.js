@@ -174,4 +174,68 @@ describe('/api/v1/schedules', () => {
       });
     });
   });
+
+  test('月と日の先頭が0のとき出欠の更新が正しくできる', () => {
+    const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
+
+    const registerUser = () => {
+      return new Promise((resolve) => {
+        User.upsert({
+          userId: 0,
+          userName: 'testuser',
+          slackId: 'SLACK000000'
+        })
+        .then(() => {
+          resolve();
+        });
+      });
+    };
+
+    const registerSchedule = () => {
+      return new Promise((resolve) => {
+        Schedule.upsert({
+          scheduleId: scheduleId,
+          scheduleName: 'testschedule',
+          description: 'This is the test schedule.',
+          createdBy: 0,
+          updatedAt: new Date(),
+          roomId: 'ROOM0000000'
+        })
+        .then(() => {
+          resolve();
+        });
+      });
+    };
+    
+    const registerDates = () => {
+      return new Promise((resolve) => {
+        Dates.create({
+          date: '1/6',
+          scheduleId: scheduleId
+        })
+        .then((d) => {
+          resolve(d.dateId);
+        })
+      });
+    };
+
+    Promise.all([registerSchedule(), registerUser(), registerDates()])
+    .then((result) => {
+      request(app)
+      .post('/api/v1/schedules/ROOM0000000/users/SLACK000000/dates/2011-01-06')
+      .send({ availability: 2 })
+      .expect(`{"status":"OK","data":{"scheduleId":${scheduleId},"userId":0,"dateId":${result[2]},"availability":2}`)
+      .end((err, res) => {
+        deleteScheduleAll(scheduleId, () => {
+          User.destroy({
+            where: {
+              userId: 0,
+              userName: 'testuser',
+              slackId: 'SLACK000000'
+            }
+          });
+        });
+      });
+    });
+  });
 });

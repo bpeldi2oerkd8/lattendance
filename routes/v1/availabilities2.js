@@ -61,8 +61,11 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
           format: 'YYYY-MM-DD'
         })) {
           const dateData = dateString.split('-');
-          let date = dateData[1] + '/' + dateData[2];
-          date = date.charAt(0) === '0' ? date.substr(1) : date;
+          let month = dateData[1].charAt(0) === '0' ? dateData[1].substr(1) : dateData[1];
+          let day = dateData[2].charAt(0) === '0' ? dateData[2].substr(1) : dateData[2];
+          const date = month + '/' + day;
+          //let date = dateData[1] + '/' + dateData[2];
+          //date = date.charAt(0) === '0' ? date.substr(1) : date;
           Dates.findOne({
             where: {
               scheduleId: scheduleId,
