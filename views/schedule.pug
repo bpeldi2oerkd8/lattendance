@@ -5,6 +5,7 @@ block content
     div.card-body
       h1.card-title #{schedule.scheduleName}
       h5.card-text #{schedule.description}
+      p.card-text （Slackなどの）チャンネルのID（オプション）：#{schedule.displayedRoomId}
       - var isMine = parseInt(user.id) === schedule.createdBy
       if isMine
         div.pt-3
