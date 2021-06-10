@@ -2,6 +2,8 @@ extends layout
 
 block content
   h3.my-3 予定の作成
+  if channel_alert
+    div(role="alert").alert.alert-warning すでにチャンネルIDが登録されています。<br>別のチャンネルIDを登録してください。
   form(method="post", action="/schedules").my-3
     input(type="hidden" name="_csrf" value!=csrfToken)
     div.form-group
@@ -15,5 +17,9 @@ block content
       textarea(name="dates", rows="5", required).form-control
     div.form-group 
       label(for="roomId") （Slackなどの）チャンネルのID（オプション）：
-      input(type="text", name="roomId").form-control
+      if channel_alert
+        input(type="text", name="roomId").form-control.is-invalid
+        div.invalid-feedback 別のチャンネルIDを登録してください。
+      else
+        input(type="text", name="roomId").form-control
     button(type="submit").btn.btn-primary 作成

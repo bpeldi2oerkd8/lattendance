@@ -12,9 +12,14 @@ const { map } = require('jquery');
 const csrfProtection = csrf({ cookie: true });
 const moment = require('moment-timezone');
 const { resolvePlugin } = require('@babel/core');
+const { Op } = require("sequelize");
 
 router.get('/new', authenticationEnsurer, csrfProtection, (req, res, next) => {
-  res.render('new', { user: req.user, csrfToken: req.csrfToken()});
+  if(parseInt(req.query.alert) === 1) {
+    res.render('new', { user: req.user, csrfToken: req.csrfToken(), channel_alert: true});
+  } else {
+    res.render('new', { user: req.user, csrfToken: req.csrfToken()});
+  }
 });
 
 router.post('/', authenticationEnsurer, csrfProtection, (req, res, next) => {
@@ -23,16 +28,31 @@ router.post('/', authenticationEnsurer, csrfProtection, (req, res, next) => {
   let roomId = req.body.roomId.trim();
   roomId = !roomId ? null : roomId;
 
-  Schedule.create({
-    scheduleId: scheduleId,
-    scheduleName: req.body.scheduleName,
-    description: req.body.description,
-    createdBy: req.user.id,
-    updatedAt: updatedAt,
-    roomId: roomId
-  }).then((schedule) => {
-    const dates = parseDates(req.body.dates);
-    createDatesAndRedirect(dates, scheduleId, res);
+  Schedule.findOrCreate({
+    where: {
+      roomId: {
+        [Op.and]: {
+          [Op.not]: null,
+          [Op.eq]: roomId
+        }
+      }
+    },
+    defaults: {
+      scheduleId: scheduleId,
+      scheduleName: req.body.scheduleName,
+      description: req.body.description,
+      createdBy: req.user.id,
+      updatedAt: updatedAt,
+      roomId: roomId
+    }
+  }).then(([schedule, created]) => {
+    if(created) {
+      const dates = parseDates(req.body.dates);
+      createDatesAndRedirect(dates, scheduleId, res);
+    }
+    else {
+      res.redirect('/schedules/new?alert=1');
+    }
   });
 });
 
