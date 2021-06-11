@@ -16,7 +16,7 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
     let availability = req.body.availability;
     availability = availability ? parseInt(availability) : 0;
 
-    //roomIdからscheduleIdを見つける
+    //roomIdからscheduleを見つける
     const getScheduleId = (roomId) => {
       return new Promise((resolve, reject) => {
         if(typeof roomId === "string" && roomId.length === 11) {
@@ -26,7 +26,7 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
             }
           })
           .then((schedule) => {
-            resolve(schedule.scheduleId);
+            resolve(schedule);
           });
         } else {
           reject('正しいルームIDを入力してください');
@@ -35,7 +35,7 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
       });
     };
 
-    //slackIdからuserIdを見つける
+    //slackIdからuserを見つける
     const getUserId = (slackId) => {
       return new Promise((resolve, reject) => {
         if(typeof slackId === "string" && slackId.length === 11) {
@@ -45,7 +45,7 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
             }
           })
           .then((user) => {
-            resolve(user.userId);
+            resolve(user);
           });
         } else {
           reject('正しいSlackIDを入力してください');
@@ -54,8 +54,8 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
       });
     };
 
-    //dateStringからdateIdに変換する
-    const getDateId = (dateString, scheduleId) => {
+    //dateStringからdateを見つける
+    const getDateId = (dateString, schedule) => {
       return new Promise((resolve, reject) => {
         if(validator.isDate(dateString, {
           format: 'YYYY-MM-DD'
@@ -64,16 +64,15 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
           let month = dateData[1].charAt(0) === '0' ? dateData[1].substr(1) : dateData[1];
           let day = dateData[2].charAt(0) === '0' ? dateData[2].substr(1) : dateData[2];
           const date = month + '/' + day;
-          //let date = dateData[1] + '/' + dateData[2];
-          //date = date.charAt(0) === '0' ? date.substr(1) : date;
+
           Dates.findOne({
             where: {
-              scheduleId: scheduleId,
+              scheduleId: schedule.scheduleId,
               date: date
             }
           })
           .then((d) => {
-            resolve(d.dateId);
+            resolve(d);
           });
         } else {
           reject('正しい日付を入力してください');
@@ -84,28 +83,26 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
 
     //出欠情報を更新し、正常に処理が終わったことを返す
     const getData = async () => {
-      const [scheduleId, userId] = await Promise.all([getScheduleId(roomId), getUserId(slackId)]);
-      const dateId = await getDateId(dateString, scheduleId);
-      return [scheduleId, userId, dateId];
+      const [schedule, user] = await Promise.all([getScheduleId(roomId), getUserId(slackId)]);
+      const date = await getDateId(dateString, schedule);
+      return [schedule, user, date];
     };
 
     getData()
-    .then(([scheduleId, userId, dateId]) => {
+    .then(([schedule, user, date]) => {
       Availability.upsert({
-        scheduleId: scheduleId,
-        userId: userId,
-        dateId: dateId,
+        scheduleId: schedule.scheduleId,
+        userId: user.userId,
+        dateId: date.dateId,
         availability: availability
       }).then(() => {
-        //テスト用
-        res.json({ 
+        res.json({
           status: 'OK',
           data: {
-            scheduleId: scheduleId,
-            userId: userId,
-            dateId: dateId,
+            slackId: user.slackId,
+            date: date.date,
             availability: availability
-          } 
+          }
         });
       });
     })

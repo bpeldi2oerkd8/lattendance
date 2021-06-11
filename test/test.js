@@ -150,7 +150,7 @@ describe('/api/v1/schedules', () => {
           scheduleId: scheduleId
         })
         .then((d) => {
-          resolve(d.dateId);
+          resolve(d);
         })
       });
     };
@@ -160,7 +160,7 @@ describe('/api/v1/schedules', () => {
       request(app)
       .post('/api/v1/schedules/ROOM0000000/users/SLACK000000/dates/2011-01-12')
       .send({ availability: 2 })
-      .expect(`{"status":"OK","data":{"scheduleId":${scheduleId},"userId":0,"dateId":${result[2]},"availability":2}`)
+      .expect(`{"status":"OK","data":{"slackId":"SLACK000000","date":${result[2].date},"availability":2}`)
       .end((err, res) => {
         deleteScheduleAll(scheduleId, () => {
           User.destroy({
@@ -214,7 +214,7 @@ describe('/api/v1/schedules', () => {
           scheduleId: scheduleId
         })
         .then((d) => {
-          resolve(d.dateId);
+          resolve(d);
         })
       });
     };
@@ -224,7 +224,7 @@ describe('/api/v1/schedules', () => {
       request(app)
       .post('/api/v1/schedules/ROOM0000000/users/SLACK000000/dates/2011-01-06')
       .send({ availability: 2 })
-      .expect(`{"status":"OK","data":{"scheduleId":${scheduleId},"userId":0,"dateId":${result[2]},"availability":2}`)
+      .expect(`{"status":"OK","data":{"slackId":"SLACK000000","dateId":${result[2].date},"availability":2}`)
       .end((err, res) => {
         deleteScheduleAll(scheduleId, () => {
           User.destroy({
