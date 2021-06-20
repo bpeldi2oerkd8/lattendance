@@ -215,7 +215,7 @@ describe('/api/v1/schedules', () => {
         })
         .then((d) => {
           resolve(d);
-        })
+        });
       });
     };
 
@@ -225,6 +225,90 @@ describe('/api/v1/schedules', () => {
       .post('/api/v1/schedules/ROOM0000000/users/SLACK000000/dates/2011-01-06')
       .send({ availability: 2 })
       .expect(`{"status":"OK","data":{"slackId":"SLACK000000","dateId":${result[2].date},"availability":2}`)
+      .end((err, res) => {
+        deleteScheduleAll(scheduleId, () => {
+          User.destroy({
+            where: {
+              userId: 0,
+              userName: 'testuser',
+              slackId: 'SLACK000000'
+            }
+          });
+        });
+      });
+    });
+  });
+
+  test('出欠の確認が正しくできる', () => {
+    const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
+
+    const registerUser = () => {
+      return new Promise((resolve) => {
+        User.upsert({
+          userId: 0,
+          userName: 'testuser',
+          slackId: 'SLACK000000'
+        })
+        .then(() => {
+          resolve();
+        });
+      });
+    };
+
+    const registerSchedule = () => {
+      return new Promise((resolve) => {
+        Schedule.upsert({
+          scheduleId: scheduleId,
+          scheduleName: 'testschedule',
+          description: 'This is the test schedule.',
+          createdBy: 0,
+          updatedAt: new Date(),
+          roomId: 'ROOM0000000'
+        })
+        .then(() => {
+          resolve();
+        });
+      });
+    };
+    
+    const registerDates = () => {
+      return new Promise((resolve) => {
+        Dates.create({
+          date: '1/6',
+          scheduleId: scheduleId
+        })
+        .then((d) => {
+          resolve(d);
+        });
+      });
+    };
+
+    const registerAvailability = (dateId) => {
+      return new Promise((resolve) => {
+        Availability.create({
+          dateId: dateId,
+          userId: 0,
+          availability: 2,
+          scheduleId: scheduleId
+        })
+        .then(() => {
+          resolve();
+        });
+      });
+    };
+
+    const registerData = async () => {
+      const result = await Promise.all([registerSchedule(), registerUser(), registerDates()]);
+      const availabilityResult = await registerAvailability(result[2].dateId);
+      result.push(availabilityResult);
+      return result;
+    };
+
+    registerData()
+    .then((result) => {
+      request(app)
+      .get('/api/v1/schedules/ROOM0000000/users/SLACK000000/dates/2011-01-06')
+      .expect(`{"status":"OK","data":{"slackId":"SLACK000000","date":${result[2].date},"availability":2}`)
       .end((err, res) => {
         deleteScheduleAll(scheduleId, () => {
           User.destroy({
