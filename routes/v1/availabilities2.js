@@ -26,10 +26,16 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
             }
           })
           .then((schedule) => {
-            resolve(schedule);
+            if(schedule) {
+              resolve(schedule);
+            }
+            else {
+              resolve('error');
+            }
+            
           });
         } else {
-          reject('正しいルームIDを入力してください');
+          resolve('error');
         }
         
       });
@@ -45,10 +51,15 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
             }
           })
           .then((user) => {
-            resolve(user);
+            if(user) {
+              resolve(user);
+            }
+            else {
+              resolve('error');
+            }
           });
         } else {
-          reject('正しいSlackIDを入力してください');
+          resolve('error');
         }
 
       });
@@ -72,10 +83,15 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
             }
           })
           .then((d) => {
-            resolve(d);
+            if(d) {
+              resolve(d);
+            }
+            else {
+              resolve('error');
+            }
           });
         } else {
-          reject('正しい日付を入力してください');
+          resolve('error');
         }
 
       });
@@ -90,27 +106,53 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
 
     getData()
     .then(([schedule, user, date]) => {
-      Availability.upsert({
-        scheduleId: schedule.scheduleId,
-        userId: user.userId,
-        dateId: date.dateId,
-        availability: availability
-      }).then(() => {
-        res.json({
-          status: 'OK',
-          data: {
-            slackId: user.slackId,
-            date: date.date,
-            availability: availability
-          }
+      //すべて成功
+      if(schedule !== 'error' && user !== 'error' && date !== 'error'){
+        Availability.upsert({
+          scheduleId: schedule.scheduleId,
+          userId: user.userId,
+          dateId: date.dateId,
+          availability: availability
+        }).then(() => {
+          res.json({
+            status: 'OK',
+            data: {
+              slackId: user.slackId,
+              date: date.date,
+              availability: availability
+            }
+          });
         });
-      });
+      }
+      //1つ以上の失敗
+      else {
+        schedule = schedule === 'error' ? 'このルームIDはシステムに登録されていません' : '';
+        user = user === 'error' ? 'このSlackIDはシステムに登録されていません' : '';
+        date = date === 'error' ? '入力した日付はこの予定に存在しません' : '';
+        const messages = [];
+        if(schedule) {
+          messages.push(schedule);
+        }
+        if(user) {
+          messages.push(user);
+        }
+        if(date) {
+          messages.push(date);
+        }
+
+        res.json({
+          status: 'NG',
+          error: {
+            messages: messages
+          } 
+        });
+      }
     })
-    .catch(([scheduleMessage, userMessage, dateMessage]) => {
+    .catch((err) => {
       res.json({
         status: 'NG',
         error: {
-          messages: [scheduleMessage, userMessage, dateMessage]
+          messages: [err.message]
         } 
       });
     });
@@ -134,10 +176,16 @@ router.get('/:roomId/users/:slackId/dates/:dateString',
             }
           })
           .then((schedule) => {
-            resolve(schedule);
+            if(schedule) {
+              resolve(schedule);
+            }
+            else {
+              resolve('error');
+            }
           });
         } else {
-          reject('正しいルームIDを入力してください');
+          // reject('正しいルームIDを入力してください');
+          resolve('error');
         }
         
       });
@@ -153,10 +201,16 @@ router.get('/:roomId/users/:slackId/dates/:dateString',
             }
           })
           .then((user) => {
-            resolve(user);
+            if(user) {
+              resolve(user);
+            }
+            else {
+              resolve('error');
+            }
           });
         } else {
-          reject('正しいSlackIDを入力してください');
+          // reject('正しいSlackIDを入力してください');
+          resolve('error');
         }
 
       });
@@ -180,10 +234,16 @@ router.get('/:roomId/users/:slackId/dates/:dateString',
             }
           })
           .then((d) => {
-            resolve(d);
+            if(d) {
+              resolve(d);
+            }
+            else {
+              resolve('error');
+            }
           });
         } else {
-          reject('正しい日付を入力してください');
+          // reject('正しい日付を入力してください');
+          resolve('error');
         }
 
       });
@@ -198,42 +258,69 @@ router.get('/:roomId/users/:slackId/dates/:dateString',
 
     getData()
     .then(([schedule, user, date]) => {
-      Availability.findOne({
-        where: {
-          scheduleId: schedule.scheduleId,
-          userId: user.userId,
-          dateId: date.dateId
+      //すべて成功
+      if(schedule !== 'error' && user !== 'error' && date !== 'error'){
+        Availability.findOne({
+          where: {
+            scheduleId: schedule.scheduleId,
+            userId: user.userId,
+            dateId: date.dateId
+          }
+        })
+        .then((a) => {
+          if(a) {
+            res.json({
+              status: 'OK',
+              data: {
+                slackId: user.slackId,
+                date: date.date,
+                availability: a.availability
+              }
+            });
+          }
+          //出欠登録情報がない場合は欠席
+          else {
+            res.json({
+              status: 'OK',
+              data: {
+                slackId: user.slackId,
+                date: date.date,
+                availability: 0
+              }
+            });
+          }
+        });
+      }
+      //1つ以上の失敗
+      else {
+        schedule = schedule === 'error' ? 'このルームIDはシステムに登録されていません' : '';
+        user = user === 'error' ? 'このSlackIDはシステムに登録されていません' : '';
+        date = date === 'error' ? '入力した日付はこの予定に存在しません' : '';
+        const messages = [];
+        if(schedule) {
+          messages.push(schedule);
         }
-      })
-      .then((a) => {
-        if(a) {
-          res.json({
-            status: 'OK',
-            data: {
-              slackId: user.slackId,
-              date: date.date,
-              availability: a.availability
-            }
-          });
+        if(user) {
+          messages.push(user);
         }
-        //出欠登録情報がない場合は欠席
-        else {
-          res.json({
-            status: 'OK',
-            data: {
-              slackId: user.slackId,
-              date: date.date,
-              availability: 0
-            }
-          });
+        if(date) {
+          messages.push(date);
         }
-      });
+
+        res.json({
+          status: 'NG',
+          error: {
+            messages: messages
+          } 
+        });
+      }
+      
     })
-    .catch(([scheduleMessage, userMessage, dateMessage]) => {
+    .catch((err) => {
       res.json({
         status: 'NG',
         error: {
-          messages: [scheduleMessage, userMessage, dateMessage]
+          messages: [err.message]
         } 
       });
     });
