@@ -355,6 +355,7 @@ describe('/api/v1/schedules', () => {
     .then((result) => {
       request(app)
       .post('/api/v1/schedules/ROOM0000001/users/SLACK000000/dates/2011-01-16')
+      .set('Authorization', `Bearer ${token}`)
       .send({ availability: 2 })
       .expect(`{"status":"NG","error":{"messages":["このルームIDはシステムに登録されていません","入力した日付はこの予定に存在しません"]}}`);
       // .expect(`{"status":"NG","error":{"messages":["このルームIDはシステムに登録されていません","入力した日付はこの予定に存在しません"]}}`)
