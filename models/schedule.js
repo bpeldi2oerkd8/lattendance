@@ -26,8 +26,11 @@ const Schedule = loader.database.define(
       type: Sequelize.DATE,
       allowNull: false
     },
-    //追加
     roomId: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
+    roomToken: {
       type: Sequelize.STRING,
       allowNull: true
     }

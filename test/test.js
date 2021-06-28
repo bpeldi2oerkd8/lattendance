@@ -110,10 +110,10 @@ describe('/logout', () => {
 });
 
 describe('/api/v1/schedules', () => {
+  const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
+  let token;
 
-  test('出欠の更新が正しくできる', () => {
-    const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
-
+  beforeAll((done) => {
     const registerUser = () => {
       return new Promise((resolve) => {
         User.upsert({
@@ -135,13 +135,74 @@ describe('/api/v1/schedules', () => {
           description: 'This is the test schedule.',
           createdBy: 0,
           updatedAt: new Date(),
-          roomId: 'ROOM0000000'
+          roomId: 'ROOM0000000',
+          roomToken: 'ROOM0000000TOKEN'
         })
         .then(() => {
           resolve();
         });
       });
     };
+
+    Promise.all([registerUser(), registerSchedule()])
+    .then(() => {
+      request(app)
+      .post('/api/v1/login')
+      .send({
+        roomId: 'ROOM0000000',
+        roomToken: 'ROOM0000000TOKEN'
+      })
+      .end((err, res) => {
+        token = res.body.token;
+        done();
+      });
+    });
+  });
+
+  afterAll(() => {
+    //関連する予定・日程・出欠情報・ユーザーをすべて削除
+    deleteScheduleAll(scheduleId, () => {
+      User.destroy({
+        where: {
+          userId: 0,
+          userName: 'testuser',
+          slackId: 'SLACK000000'
+        }
+      });
+    });
+  });
+
+  test('出欠の更新が正しくできる', () => {
+    // const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
+
+    // const registerUser = () => {
+    //   return new Promise((resolve) => {
+    //     User.upsert({
+    //       userId: 0,
+    //       userName: 'testuser',
+    //       slackId: 'SLACK000000'
+    //     })
+    //     .then(() => {
+    //       resolve();
+    //     });
+    //   });
+    // };
+
+    // const registerSchedule = () => {
+    //   return new Promise((resolve) => {
+    //     Schedule.upsert({
+    //       scheduleId: scheduleId,
+    //       scheduleName: 'testschedule',
+    //       description: 'This is the test schedule.',
+    //       createdBy: 0,
+    //       updatedAt: new Date(),
+    //       roomId: 'ROOM0000000'
+    //     })
+    //     .then(() => {
+    //       resolve();
+    //     });
+    //   });
+    // };
     
     const registerDates = () => {
       return new Promise((resolve) => {
@@ -155,57 +216,60 @@ describe('/api/v1/schedules', () => {
       });
     };
 
-    Promise.all([registerSchedule(), registerUser(), registerDates()])
+    // Promise.all([registerSchedule(), registerUser(), registerDates()])
+    return registerDates()
     .then((result) => {
       request(app)
       .post('/api/v1/schedules/ROOM0000000/users/SLACK000000/dates/2011-01-12')
+      .set('Authorization', `Bearer ${token}`)
       .send({ availability: 2 })
-      .expect(`{"status":"OK","data":{"slackId":"SLACK000000","date":${result[2].date},"availability":2}`)
-      .end((err, res) => {
-        deleteScheduleAll(scheduleId, () => {
-          User.destroy({
-            where: {
-              userId: 0,
-              userName: 'testuser',
-              slackId: 'SLACK000000'
-            }
-          });
-        });
-      });
+      .expect(`{"status":"OK","data":{"slackId":"SLACK000000","date":${result.date},"availability":2}`);
+      // .expect(`{"status":"OK","data":{"slackId":"SLACK000000","date":${result[2].date},"availability":2}`)
+      // .end((err, res) => {
+      //   deleteScheduleAll(scheduleId, () => {
+      //     User.destroy({
+      //       where: {
+      //         userId: 0,
+      //         userName: 'testuser',
+      //         slackId: 'SLACK000000'
+      //       }
+      //     });
+      //   });
+      // });
     });
   });
 
   test('月と日の先頭が0のとき出欠の更新が正しくできる', () => {
-    const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
+    // const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
 
-    const registerUser = () => {
-      return new Promise((resolve) => {
-        User.upsert({
-          userId: 0,
-          userName: 'testuser',
-          slackId: 'SLACK000000'
-        })
-        .then(() => {
-          resolve();
-        });
-      });
-    };
+    // const registerUser = () => {
+    //   return new Promise((resolve) => {
+    //     User.upsert({
+    //       userId: 0,
+    //       userName: 'testuser',
+    //       slackId: 'SLACK000000'
+    //     })
+    //     .then(() => {
+    //       resolve();
+    //     });
+    //   });
+    // };
 
-    const registerSchedule = () => {
-      return new Promise((resolve) => {
-        Schedule.upsert({
-          scheduleId: scheduleId,
-          scheduleName: 'testschedule',
-          description: 'This is the test schedule.',
-          createdBy: 0,
-          updatedAt: new Date(),
-          roomId: 'ROOM0000000'
-        })
-        .then(() => {
-          resolve();
-        });
-      });
-    };
+    // const registerSchedule = () => {
+    //   return new Promise((resolve) => {
+    //     Schedule.upsert({
+    //       scheduleId: scheduleId,
+    //       scheduleName: 'testschedule',
+    //       description: 'This is the test schedule.',
+    //       createdBy: 0,
+    //       updatedAt: new Date(),
+    //       roomId: 'ROOM0000000'
+    //     })
+    //     .then(() => {
+    //       resolve();
+    //     });
+    //   });
+    // };
     
     const registerDates = () => {
       return new Promise((resolve) => {
@@ -219,57 +283,60 @@ describe('/api/v1/schedules', () => {
       });
     };
 
-    Promise.all([registerSchedule(), registerUser(), registerDates()])
+    // Promise.all([registerSchedule(), registerUser(), registerDates()])
+    return registerDates()
     .then((result) => {
       request(app)
       .post('/api/v1/schedules/ROOM0000000/users/SLACK000000/dates/2011-01-06')
+      .set('Authorization', `Bearer ${token}`)
       .send({ availability: 2 })
-      .expect(`{"status":"OK","data":{"slackId":"SLACK000000","dateId":${result[2].date},"availability":2}`)
-      .end((err, res) => {
-        deleteScheduleAll(scheduleId, () => {
-          User.destroy({
-            where: {
-              userId: 0,
-              userName: 'testuser',
-              slackId: 'SLACK000000'
-            }
-          });
-        });
-      });
+      .expect(`{"status":"OK","data":{"slackId":"SLACK000000","dateId":${result.date},"availability":2}`);
+      // .expect(`{"status":"OK","data":{"slackId":"SLACK000000","dateId":${result[2].date},"availability":2}`)
+      // .end((err, res) => {
+      //   deleteScheduleAll(scheduleId, () => {
+      //     User.destroy({
+      //       where: {
+      //         userId: 0,
+      //         userName: 'testuser',
+      //         slackId: 'SLACK000000'
+      //       }
+      //     });
+      //   });
+      // });
     });
   });
 
   test('出欠更新失敗時に正しいエラーメッセージを出力する', () => {
-    const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
+    // const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
 
-    const registerUser = () => {
-      return new Promise((resolve) => {
-        User.upsert({
-          userId: 0,
-          userName: 'testuser',
-          slackId: 'SLACK000000'
-        })
-        .then(() => {
-          resolve();
-        });
-      });
-    };
+    // const registerUser = () => {
+    //   return new Promise((resolve) => {
+    //     User.upsert({
+    //       userId: 0,
+    //       userName: 'testuser',
+    //       slackId: 'SLACK000000'
+    //     })
+    //     .then(() => {
+    //       resolve();
+    //     });
+    //   });
+    // };
 
-    const registerSchedule = () => {
-      return new Promise((resolve) => {
-        Schedule.upsert({
-          scheduleId: scheduleId,
-          scheduleName: 'testschedule',
-          description: 'This is the test schedule.',
-          createdBy: 0,
-          updatedAt: new Date(),
-          roomId: 'ROOM0000000'
-        })
-        .then(() => {
-          resolve();
-        });
-      });
-    };
+    // const registerSchedule = () => {
+    //   return new Promise((resolve) => {
+    //     Schedule.upsert({
+    //       scheduleId: scheduleId,
+    //       scheduleName: 'testschedule',
+    //       description: 'This is the test schedule.',
+    //       createdBy: 0,
+    //       updatedAt: new Date(),
+    //       roomId: 'ROOM0000000'
+    //     })
+    //     .then(() => {
+    //       resolve();
+    //     });
+    //   });
+    // };
     
     const registerDates = () => {
       return new Promise((resolve) => {
@@ -283,57 +350,59 @@ describe('/api/v1/schedules', () => {
       });
     };
 
-    Promise.all([registerSchedule(), registerUser(), registerDates()])
+    // Promise.all([registerSchedule(), registerUser(), registerDates()])
+    return registerDates()
     .then((result) => {
       request(app)
       .post('/api/v1/schedules/ROOM0000001/users/SLACK000000/dates/2011-01-16')
       .send({ availability: 2 })
-      .expect(`{"status":"NG","error":{"messages":["このルームIDはシステムに登録されていません","入力した日付はこの予定に存在しません"]}}`)
-      .end((err, res) => {
-        deleteScheduleAll(scheduleId, () => {
-          User.destroy({
-            where: {
-              userId: 0,
-              userName: 'testuser',
-              slackId: 'SLACK000000'
-            }
-          });
-        });
-      });
+      .expect(`{"status":"NG","error":{"messages":["このルームIDはシステムに登録されていません","入力した日付はこの予定に存在しません"]}}`);
+      // .expect(`{"status":"NG","error":{"messages":["このルームIDはシステムに登録されていません","入力した日付はこの予定に存在しません"]}}`)
+      // .end((err, res) => {
+      //   deleteScheduleAll(scheduleId, () => {
+      //     User.destroy({
+      //       where: {
+      //         userId: 0,
+      //         userName: 'testuser',
+      //         slackId: 'SLACK000000'
+      //       }
+      //     });
+      //   });
+      // });
     });
   });
 
   test('出欠の確認が正しくできる', () => {
-    const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
+    // const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
 
-    const registerUser = () => {
-      return new Promise((resolve) => {
-        User.upsert({
-          userId: 0,
-          userName: 'testuser',
-          slackId: 'SLACK000000'
-        })
-        .then(() => {
-          resolve();
-        });
-      });
-    };
+    // const registerUser = () => {
+    //   return new Promise((resolve) => {
+    //     User.upsert({
+    //       userId: 0,
+    //       userName: 'testuser',
+    //       slackId: 'SLACK000000'
+    //     })
+    //     .then(() => {
+    //       resolve();
+    //     });
+    //   });
+    // };
 
-    const registerSchedule = () => {
-      return new Promise((resolve) => {
-        Schedule.upsert({
-          scheduleId: scheduleId,
-          scheduleName: 'testschedule',
-          description: 'This is the test schedule.',
-          createdBy: 0,
-          updatedAt: new Date(),
-          roomId: 'ROOM0000000'
-        })
-        .then(() => {
-          resolve();
-        });
-      });
-    };
+    // const registerSchedule = () => {
+    //   return new Promise((resolve) => {
+    //     Schedule.upsert({
+    //       scheduleId: scheduleId,
+    //       scheduleName: 'testschedule',
+    //       description: 'This is the test schedule.',
+    //       createdBy: 0,
+    //       updatedAt: new Date(),
+    //       roomId: 'ROOM0000000'
+    //     })
+    //     .then(() => {
+    //       resolve();
+    //     });
+    //   });
+    // };
     
     const registerDates = () => {
       return new Promise((resolve) => {
@@ -362,62 +431,67 @@ describe('/api/v1/schedules', () => {
     };
 
     const registerData = async () => {
-      const result = await Promise.all([registerSchedule(), registerUser(), registerDates()]);
-      const availabilityResult = await registerAvailability(result[2].dateId);
-      result.push(availabilityResult);
-      return result;
+      // const result = await Promise.all([registerSchedule(), registerUser(), registerDates()]);
+      const dateResult = await registerDates();
+      const availabilityResult = await registerAvailability(dateResult.dateId);
+      // const availabilityResult = await registerAvailability(result[2].dateId);
+      // result.push(availabilityResult);
+      // return result;
+      return [dateResult, availabilityResult];
     };
 
-    registerData()
+    return registerData()
     .then((result) => {
       request(app)
       .get('/api/v1/schedules/ROOM0000000/users/SLACK000000/dates/2011-01-06')
-      .expect(`{"status":"OK","data":{"slackId":"SLACK000000","date":${result[2].date},"availability":2}`)
-      .end((err, res) => {
-        deleteScheduleAll(scheduleId, () => {
-          User.destroy({
-            where: {
-              userId: 0,
-              userName: 'testuser',
-              slackId: 'SLACK000000'
-            }
-          });
-        });
-      });
+      .set('Authorization', `Bearer ${token}`)
+      .expect(`{"status":"OK","data":{"slackId":"SLACK000000","date":${result[0].date},"availability":2}`);
+      // .expect(`{"status":"OK","data":{"slackId":"SLACK000000","date":${result[2].date},"availability":2}`)
+      // .end((err, res) => {
+      //   deleteScheduleAll(scheduleId, () => {
+      //     User.destroy({
+      //       where: {
+      //         userId: 0,
+      //         userName: 'testuser',
+      //         slackId: 'SLACK000000'
+      //       }
+      //     });
+      //   });
+      // });
     });
   });
 
   test('出欠確認失敗時に正しいエラーメッセージを出力する', () => {
-    const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
+    // const scheduleId = '9145a8a6-c7a5-89ec-558f-28692402e698';
 
-    const registerUser = () => {
-      return new Promise((resolve) => {
-        User.upsert({
-          userId: 0,
-          userName: 'testuser',
-          slackId: 'SLACK000000'
-        })
-        .then(() => {
-          resolve();
-        });
-      });
-    };
+    // const registerUser = () => {
+    //   return new Promise((resolve) => {
+    //     User.upsert({
+    //       userId: 0,
+    //       userName: 'testuser',
+    //       slackId: 'SLACK000000'
+    //     })
+    //     .then(() => {
+    //       resolve();
+    //     });
+    //   });
+    // };
 
-    const registerSchedule = () => {
-      return new Promise((resolve) => {
-        Schedule.upsert({
-          scheduleId: scheduleId,
-          scheduleName: 'testschedule',
-          description: 'This is the test schedule.',
-          createdBy: 0,
-          updatedAt: new Date(),
-          roomId: 'ROOM0000000'
-        })
-        .then(() => {
-          resolve();
-        });
-      });
-    };
+    // const registerSchedule = () => {
+    //   return new Promise((resolve) => {
+    //     Schedule.upsert({
+    //       scheduleId: scheduleId,
+    //       scheduleName: 'testschedule',
+    //       description: 'This is the test schedule.',
+    //       createdBy: 0,
+    //       updatedAt: new Date(),
+    //       roomId: 'ROOM0000000'
+    //     })
+    //     .then(() => {
+    //       resolve();
+    //     });
+    //   });
+    // };
     
     const registerDates = () => {
       return new Promise((resolve) => {
@@ -446,28 +520,33 @@ describe('/api/v1/schedules', () => {
     };
 
     const registerData = async () => {
-      const result = await Promise.all([registerSchedule(), registerUser(), registerDates()]);
-      const availabilityResult = await registerAvailability(result[2].dateId);
-      result.push(availabilityResult);
-      return result;
+      // const result = await Promise.all([registerSchedule(), registerUser(), registerDates()]);
+      const dateResult = await registerDates();
+      const availabilityResult = await registerAvailability(dateResult.dateId);
+      // const availabilityResult = await registerAvailability(result[2].dateId);
+      // result.push(availabilityResult);
+      // return result;
+      return [dateResult, availabilityResult];
     };
 
-    registerData()
+    return registerData()
     .then((result) => {
       request(app)
       .get('/api/v1/schedules/ROOM0000001/users/SLACK000000/dates/2011-01-16')
-      .expect(`{"status":"NG","error":{"messages":["このルームIDはシステムに登録されていません","入力した日付はこの予定に存在しません"]}}`)
-      .end((err, res) => {
-        deleteScheduleAll(scheduleId, () => {
-          User.destroy({
-            where: {
-              userId: 0,
-              userName: 'testuser',
-              slackId: 'SLACK000000'
-            }
-          });
-        });
-      });
+      .set('Authorization', `Bearer ${token}`)
+      .expect(`{"status":"NG","error":{"messages":["このルームIDはシステムに登録されていません","入力した日付はこの予定に存在しません"]}}`);
+      // .expect(`{"status":"NG","error":{"messages":["このルームIDはシステムに登録されていません","入力した日付はこの予定に存在しません"]}}`)
+      // .end((err, res) => {
+      //   deleteScheduleAll(scheduleId, () => {
+      //     User.destroy({
+      //       where: {
+      //         userId: 0,
+      //         userName: 'testuser',
+      //         slackId: 'SLACK000000'
+      //       }
+      //     });
+      //   });
+      // });
     });
   });
 });

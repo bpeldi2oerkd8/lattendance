@@ -6,9 +6,11 @@ const Schedule = require('../../models/schedule');
 const Dates = require('../../models/date');
 const Availability = require('../../models/availability');
 const validator = require('validator');
+const verifyToken = require('./api-authentication-verifier');
 
 // 出欠の更新
 router.post('/:roomId/users/:slackId/dates/:dateString',
+  verifyToken,
   (req, res, next) => {
     const roomId = req.params.roomId;
     const slackId = req.params.slackId;
@@ -161,6 +163,7 @@ router.post('/:roomId/users/:slackId/dates/:dateString',
 
 // 出欠の確認
 router.get('/:roomId/users/:slackId/dates/:dateString',
+  verifyToken,
   (req, res, next) => {
     const roomId = req.params.roomId;
     const slackId = req.params.slackId;

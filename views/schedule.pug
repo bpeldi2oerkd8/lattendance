@@ -5,9 +5,9 @@ block content
     div.card-body
       h1.card-title #{schedule.scheduleName}
       h5.card-text #{schedule.description}
-      p.card-text （Slackなどの）チャンネルのID（オプション）：#{schedule.displayedRoomId}
       - var isMine = parseInt(user.id) === schedule.createdBy
       if isMine
+        p.card-text （Slackなどの）チャンネルのID（オプション）：#{schedule.displayedRoomId}
         div.pt-3
           button(type="button", data-toggle="modal", data-target="#deleteConfirmation").btn.btn-danger.mr-3 削除
           div(tabindex="-1", role="dialog", aria-labelledby="exampleModalCenterTitle", aria-hidden="true")#deleteConfirmation.modal.fade

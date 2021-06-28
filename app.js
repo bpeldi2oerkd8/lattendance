@@ -69,6 +69,7 @@ var slackIdRegisterRouter = require('./routes/slack-id-register');
 var schedulesRouter = require('./routes/schedules');
 var availabilitiesRouter = require('./routes/availabilities');
 var availabilities2Router = require('./routes/v1/availabilities2');
+var apiLoginRouter = require('./routes/v1/api-login');
 
 var app = express();
 app.use(helmet());
@@ -79,7 +80,7 @@ app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -94,6 +95,7 @@ app.use('/slack-id-register', slackIdRegisterRouter);
 app.use('/schedules', schedulesRouter);
 app.use('/schedules', availabilitiesRouter);
 app.use('/api/v1/schedules', availabilities2Router);
+app.use('/api/v1/login', apiLoginRouter);
 
 app.get('/auth/github',
   passport.authenticate('github', { scope: ['user:email'] }),

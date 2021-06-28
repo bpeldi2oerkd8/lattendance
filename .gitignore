@@ -2,6 +2,10 @@ node_modules/
 secret_info/
 .DS_Store
 
+# REST API test file
+*.http
+*.rest
+
 # Logs
 logs
 *.log
