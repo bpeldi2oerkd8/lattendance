@@ -5,6 +5,7 @@ secret_info/
 # REST API test file
 *.http
 *.rest
+rest_test/
 
 # Logs
 logs
