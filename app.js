@@ -67,6 +67,7 @@ var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
 var slackIdRegisterRouter = require('./routes/slack-id-register');
 var schedulesRouter = require('./routes/schedules');
+var slackChannelLinkRouter = require('./routes/slack-channel-linker');
 var availabilitiesRouter = require('./routes/availabilities');
 var availabilities2Router = require('./routes/v1/availabilities2');
 var apiLoginRouter = require('./routes/v1/api-login');
@@ -94,6 +95,7 @@ app.use('/logout', logoutRouter);
 app.use('/slack-id-register', slackIdRegisterRouter);
 app.use('/schedules', schedulesRouter);
 app.use('/schedules', availabilitiesRouter);
+app.use('/schedules/slack-channel-linker', slackChannelLinkRouter);
 app.use('/api/v1/schedules', availabilities2Router);
 app.use('/api/v1/login', apiLoginRouter);
 
