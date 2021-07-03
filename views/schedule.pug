@@ -47,7 +47,7 @@ block content
     div.card-footer.text-muted 作成者: #{schedule.user.userName}<br>更新日時: #{schedule.formattedUpdatedAt}
   h5.my-3 URLの共有
   div.input-group.mb-3
-    input(type="text", value="", readonly)#current-url.form-control
+    input(type="text", value="", readonly)#current-url.copy-value.form-control
     div.input-group-append
       button(type="button")#copy-button.btn.btn-outline-secondary Copy
   div.table-responsive

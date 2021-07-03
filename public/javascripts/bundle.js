@@ -107,11 +107,11 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(window).on('load resize', function
 }); //現在位置のURL
 
 var url = jquery__WEBPACK_IMPORTED_MODULE_1___default()(location).attr('href');
-jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').val(url); //URLコピーボタン
+jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').val(url); //コピーボタン
 
 var copyButton = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#copy-button');
 copyButton.on('click', function () {
-  jquery__WEBPACK_IMPORTED_MODULE_1___default()('#current-url').trigger('select');
+  jquery__WEBPACK_IMPORTED_MODULE_1___default()('.copy-value').trigger('select');
   document.execCommand('copy');
   copyButton.text('Copied!');
   copyButton.attr('disabled', true);
