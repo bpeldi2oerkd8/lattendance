@@ -23,22 +23,24 @@ block content
                     input(type="hidden" name="_csrf" value!=csrfToken)
                     button(type="submit").btn.btn-danger 削除
           a(href=`/schedules/${schedule.scheduleId}/edit`).btn.btn-primary.mr-3 編集
-        - var linkedBot = schedule.roomId && schedule.roomToken
+        - var linkedBot = schedule.roomId
         if linkedBot
           div.pt-3
             p.card-text 
               i(style="color: green;").fas.fa-check-square
               |
               | Slack連携済み
-            p.card-text チャンネルのID：#{schedule.roomId}
-            p.card-text チャンネルのトークン：****** (セキュリティ上、非表示にしています)
-            a(href="/schedules/slack-channel-linker/edit").btn.btn-dark
+              br
+              | チャンネルのID：#{schedule.roomId}
+              br
+              | チャンネルのトークン：****** (セキュリティ上、非表示にしています)
+            a(href=`/schedules/slack-channel-linker/${schedule.scheduleId}/edit`).btn.btn-dark
               i.fab.fa-slack
               |
               | Slack連携設定の変更
         else
           div.pt-3
-            a(href="/schedules/slack-channel-linker/new").btn.btn-dark
+            a(href=`/schedules/slack-channel-linker/${schedule.scheduleId}/new`).btn.btn-dark
                 i.fab.fa-slack
                 |
                 | Slackと連携する

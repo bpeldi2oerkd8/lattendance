@@ -14,13 +14,17 @@ var User = require('./models/user');
 var Schedule = require('./models/schedule');
 var Availability = require('./models/availability');
 var Dates = require('./models/date');
+var Room = require('./models/room');
 User.sync().then(() => {
-  Schedule.belongsTo(User, {foreignKey: 'createdBy'});
-  Schedule.sync({ alter: true });
-  Availability.belongsTo(User, {foreignKey: 'userId'});
-  Dates.sync().then(() => {
-    Availability.belongsTo(Dates, {foreignKey: 'dateId'});
-    Availability.sync();
+  Room.sync().then(() => {
+    Schedule.belongsTo(User, {foreignKey: 'createdBy'});
+    Schedule.belongsTo(Room, {foreignKey: 'roomId'});
+    Schedule.sync();
+    Availability.belongsTo(User, {foreignKey: 'userId'});
+    Dates.sync().then(() => {
+      Availability.belongsTo(Dates, {foreignKey: 'dateId'});
+      Availability.sync();
+    });
   });
 });
 

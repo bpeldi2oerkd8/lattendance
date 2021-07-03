@@ -12,7 +12,6 @@ const { map } = require('jquery');
 const csrfProtection = csrf({ cookie: true });
 const moment = require('moment-timezone');
 const { resolvePlugin } = require('@babel/core');
-const { Op } = require("sequelize");
 
 router.get('/new', authenticationEnsurer, csrfProtection, (req, res, next) => {
   if(parseInt(req.query.alert) === 1) {
@@ -25,34 +24,15 @@ router.get('/new', authenticationEnsurer, csrfProtection, (req, res, next) => {
 router.post('/', authenticationEnsurer, csrfProtection, (req, res, next) => {
   const scheduleId = uuidv4();
   const updatedAt = new Date();
-  let roomId = req.body.roomId.trim();
-  roomId = !roomId ? null : roomId;
-
-  Schedule.findOrCreate({
-    where: {
-      roomId: {
-        [Op.and]: {
-          [Op.not]: null,
-          [Op.eq]: roomId
-        }
-      }
-    },
-    defaults: {
-      scheduleId: scheduleId,
-      scheduleName: req.body.scheduleName,
-      description: req.body.description,
-      createdBy: req.user.id,
-      updatedAt: updatedAt,
-      roomId: roomId
-    }
-  }).then(([schedule, created]) => {
-    if(created) {
-      const dates = parseDates(req.body.dates);
-      createDatesAndRedirect(dates, scheduleId, res);
-    }
-    else {
-      res.redirect('/schedules/new?alert=1');
-    }
+  Schedule.create({
+    scheduleId: scheduleId,
+    scheduleName: req.body.scheduleName,
+    description: req.body.description,
+    createdBy: req.user.id,
+    updatedAt: updatedAt
+  }).then((schedule) => {
+    const dates = parseDates(req.body.dates);
+    createDatesAndRedirect(dates, scheduleId, res);
   });
 });
 
@@ -121,8 +101,8 @@ router.get('/:scheduleId', authenticationEnsurer, csrfProtection, (req, res, nex
 
           //表示用の更新日時
           schedule.formattedUpdatedAt = moment(schedule.updatedAt).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm');
-          //表示用のroomId
-          schedule.displayedRoomId = !schedule.roomId ? '登録されていません' : schedule.roomId;
+          // //表示用のroomId
+          // schedule.displayedRoomId = !schedule.roomId ? '登録されていません' : schedule.roomId;
           res.render('schedule', {
             user: req.user,
             schedule: schedule,
@@ -183,16 +163,17 @@ router.post('/:scheduleId', authenticationEnsurer, csrfProtection, (req, res, ne
       //?edit=1
       if(parseInt(req.query.edit) === 1){
         const updatedAt = new Date();
-        let roomId = req.body.roomId.trim();
-        roomId = !roomId ? null : roomId;
+        // let roomId = req.body.roomId.trim();
+        // roomId = !roomId ? null : roomId;
 
         schedule.update({
           scheduleId: schedule.scheduleId,
           scheduleName: req.body.scheduleName,
           description: req.body.description,
           createdBy: req.user.id,
-          updatedAt: updatedAt,
-          roomId: roomId
+          updatedAt: updatedAt
+          // updatedAt: updatedAt,
+          // roomId: roomId
         }).then((schedule) => {
           const newDates = parseDates(req.body.dates);
           if(newDates) {

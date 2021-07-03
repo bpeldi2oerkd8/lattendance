@@ -13,7 +13,7 @@ block content
     div.form-group
       label(for="dates") 日程（改行で11/1, 11/16のような形式で）：
       textarea(name="dates", rows="5", required).form-control #{dates}
-    div.form-group 
+    //- div.form-group 
       label(for="roomId") （Slackなどの）チャンネルのID（オプション）：
       input(type="text", name="roomId", value=schedule.roomId).form-control
     button(type="submit").btn.btn-primary 編集
