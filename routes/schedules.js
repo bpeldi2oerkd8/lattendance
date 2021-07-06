@@ -12,6 +12,7 @@ const { map } = require('jquery');
 const csrfProtection = csrf({ cookie: true });
 const moment = require('moment-timezone');
 const { resolvePlugin } = require('@babel/core');
+const Room = require('../models/room');
 
 router.get('/new', authenticationEnsurer, csrfProtection, (req, res, next) => {
   if(parseInt(req.query.alert) === 1) {
@@ -163,8 +164,6 @@ router.post('/:scheduleId', authenticationEnsurer, csrfProtection, (req, res, ne
       //?edit=1
       if(parseInt(req.query.edit) === 1){
         const updatedAt = new Date();
-        // let roomId = req.body.roomId.trim();
-        // roomId = !roomId ? null : roomId;
 
         schedule.update({
           scheduleId: schedule.scheduleId,
@@ -172,8 +171,6 @@ router.post('/:scheduleId', authenticationEnsurer, csrfProtection, (req, res, ne
           description: req.body.description,
           createdBy: req.user.id,
           updatedAt: updatedAt
-          // updatedAt: updatedAt,
-          // roomId: roomId
         }).then((schedule) => {
           const newDates = parseDates(req.body.dates);
           if(newDates) {
@@ -248,7 +245,22 @@ function deleteScheduleAll(scheduleId, done, err){
     const promises = dates.map((d) => { return d.destroy(); });
     return Promise.all(promises);
   }).then(() => {
-    return Schedule.findByPk(scheduleId).then((s) => { return s.destroy(); });
+    return Schedule.findByPk(scheduleId);
+  }).then((schedule) => {
+    const roomId = schedule.roomId;
+    schedule.destroy();
+    return new Promise((resolve) => {
+      resolve(roomId);
+    });
+  }).then((roomId) => {
+    if(roomId) {
+      return Room.findByPk(roomId).then((r) => { return r.destroy(); });
+    }
+    else {
+      return new Promise((resolve) => {
+        resolve();
+      });
+    }
   }).then(() => {
     if (err) return done(err);
     done();
