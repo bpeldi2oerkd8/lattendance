@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h3.my-3 Slack連携設定の変更
+  div(role="alert").alert.alert-success.m-5
+    h4.alert-heading トークンが再発行されました！
+    div.input-group.bg-white
+      input(type="text", value=`${roomToken}`, readonly).copy-value.form-control
+      div.input-group-append
+        button(type="button")#copy-button.btn.btn-outline-secondary Copy
+  h4 トークンの再設定
+  p Botシステムに環境変数トークンを再設定してください。
+  p Herokuの場合、以下のコマンドを入力します。
+  pre.prettyprint 
+    | heroku config:set HUBOT_ROOM_TOKEN=（コピーしたトークンをここに貼る）
+  br
+  p これで、Slackのbotとの連携は完了です。
+  a(href=`/schedules/${schedule.scheduleId}`).btn.btn-primary.my-3 予定ページに戻る

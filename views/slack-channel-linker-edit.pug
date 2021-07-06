@@ -1,0 +1,53 @@
+extends layout
+
+block content
+  h3.my-3 Slack連携設定の変更
+  div.mb-5
+    h4 Slack連携の解除
+    if channel_alert 
+      div(role="alert").alert.alert-warning.my-2 この予定にはチャンネルIDが登録されていません。
+    button(type="button", data-toggle="modal", data-target="#unlinkConfirmation").btn.btn-danger.mr-3 Slackとの連携を解除する
+    div(tabindex="-1", role="dialog", aria-labelledby="unlinkConfirmationModalTitle", aria-hidden="true")#unlinkConfirmation.modal.fade
+      div(role="document").modal-dialog.modal-dialog-centered
+        div.modal-content
+          div.modal-header
+            h5#unlinkConfirmationModalTitle.modal-title Slack連携解除の確認
+            button.close(type="button", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+          div.modal-body 本当に解除しますか？<br>この操作は取り消せません。
+          div.modal-footer
+            button(type="button", data-dismiss="modal").btn.btn-secondary 戻る
+            form(method="post", action=`/schedules/slack-channel-linker/${schedule.scheduleId}/unlink`)
+              input(type="hidden" name="_csrf" value!=csrfToken)
+              button(type="submit").btn.btn-danger 解除
+  div.my-5
+    h4 チャンネルIDの変更
+    if channel_alert2
+      div(role="alert").alert.alert-warning.my-2 すでにチャンネルIDが登録されています。<br>別のチャンネルIDを登録してください。
+    if channel_alert3
+      div(role="alert").alert.alert-warning.my-2 チャンネルIDが入力されていません。
+    form(method="post", action=`/schedules/slack-channel-linker/${schedule.scheduleId}/change-roomid`)
+      input(type="hidden" name="_csrf" value!=csrfToken)
+      div.form-group
+        label(for="roomId") 変更後のチャンネルID：
+        input(type="text", name="newRoomId", placeholder="ここに変更後のチャンネルIDを入力", required).form-control
+      button(type="submit").btn.btn-primary 変更
+  div.my-5
+    h4 トークンの再発行
+    if channel_alert4 
+      div(role="alert").alert.alert-warning.my-2 この予定にはチャンネルIDが登録されていません。
+    p セキュリティ上の理由でトークンを再発行する場合は、以下のボタンをクリックしてください。
+    button(type="button", data-toggle="modal", data-target="#retokenConfirmation").btn.btn-primary.mr-3 トークンを再発行
+    div(tabindex="-1", role="dialog", aria-labelledby="retokenConfirmationModalTitle", aria-hidden="true")#retokenConfirmation.modal.fade
+      div(role="document").modal-dialog.modal-dialog-centered
+        div.modal-content
+          div.modal-header
+            h5#retokenConfirmationModalTitle.modal-title トークンの再発行
+            button.close(type="button", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+          div.modal-body トークンを再発行しますか？<br>以前のトークンは無効になります。
+          div.modal-footer
+            button(type="button", data-dismiss="modal").btn.btn-secondary 戻る
+            form(method="post", action=`/schedules/slack-channel-linker/${schedule.scheduleId}/regenerate-token`)
+              input(type="hidden" name="_csrf" value!=csrfToken)
+              button(type="submit").btn.btn-primary 再発行

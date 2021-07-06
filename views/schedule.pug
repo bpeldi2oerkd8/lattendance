@@ -9,7 +9,7 @@ block content
       if isMine
         div.pt-3
           button(type="button", data-toggle="modal", data-target="#deleteConfirmation").btn.btn-danger.mr-3 削除
-          div(tabindex="-1", role="dialog", aria-labelledby="exampleModalCenterTitle", aria-hidden="true")#deleteConfirmation.modal.fade
+          div(tabindex="-1", role="dialog", aria-labelledby="deleteConfirmationModal", aria-hidden="true")#deleteConfirmation.modal.fade
             div(role="document").modal-dialog.modal-dialog-centered
               div.modal-content
                 div.modal-header
@@ -41,9 +41,9 @@ block content
         else
           div.pt-3
             a(href=`/schedules/slack-channel-linker/${schedule.scheduleId}/new`).btn.btn-dark
-                i.fab.fa-slack
-                |
-                | Slackと連携する
+              i.fab.fa-slack
+              |
+              | Slackと連携する
     div.card-footer.text-muted 作成者: #{schedule.user.userName}<br>更新日時: #{schedule.formattedUpdatedAt}
   h5.my-3 URLの共有
   div.input-group.mb-3
