@@ -1,5 +1,8 @@
 # lattendance
 研究室の出席管理ツール（Node.js, Express）
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/64352857/125099653-37b26b00-e113-11eb-8e16-d7485bb58674.png" width="400">
+</div>
 
 ## 概要
 研究室用の出席登録システムです。  
