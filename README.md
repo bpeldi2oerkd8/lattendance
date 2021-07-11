@@ -1,5 +1,6 @@
 # lattendance
-研究室の出席管理ツール（Node.js, Express）
+研究室の出席管理ツール（Node.js, Express）  
+レスポンシブ対応済
 <div align="center">
   <img src="https://user-images.githubusercontent.com/64352857/125099653-37b26b00-e113-11eb-8e16-d7485bb58674.png" width="400">
 </div>
@@ -9,7 +10,8 @@
 GitHubアカウントでログインし、予定の作成・削除・編集が可能です。  
 予定のURLを共有することで、予定の出欠登録状況を共有することができます。  
 N予備校の教材をベースに制作しました。  
-言語は主にNode.js、フレームワークはExpressを用いて作成しました。
+言語は主にJavascript(Node.js)、フレームワークはExpressを用いて作成しました。  
+特に工夫した点は、<strong>Slackのbotを使って簡単に出欠の登録や確認をできるようにした点</strong>です。
 
 ## デモ
 https://user-images.githubusercontent.com/64352857/117108595-64b66a80-adbe-11eb-9e6c-0377d6bf6d9b.mp4
@@ -32,13 +34,30 @@ heroku config:set HEROKU_URL='作成したHerokuアプリのURL'
 heroku config:set GITHUB_CLIENT_ID='GitHub OAuthで登録したアプリのクライアントID'  
 heroku config:set GITHUB_CLIENT_SECRET='GitHub OAuthで登録したアプリのクライアントシークレット'  
 heroku config:set SESSION_INFO='あらかじめ定めたセッションシークレット'
+heroku config:set SERVER_API_SECRET='あらかじめ定めたJWT認証に用いるAPIシークレット'
 ```
 6.Heroku環境へのプッシュ  
 ```bash
 git push heroku main:master
 ```
 
+## 特徴
+Slackとの連携設定をすることにより、Slackのチャンネル上でbotにメッセージを送信するだけで出欠の確認・登録ができます。  
+botから本システムのAPIを叩く構成になっており、botのシステムを変更することで理論上すべてのチャットツールで利用できます。  
+APIにはJWT認証があり、セキュリティ的にも安全です。  
+Slackとの連携する場合、[lattendance-bot](https://github.com/bpeldi2oerkd8/lattendance-bot)を同時に起動し、事前に設定を行う必要があります。  
+[lattendance-bot](https://github.com/bpeldi2oerkd8/lattendance-bot)の設定方法はREADMEを確認してください。  
+  
+また、Bootstrap4を用いているため、全ページレスポンシブ対応です。  
+
+## 構成図
+[lattendance-bot](https://github.com/bpeldi2oerkd8/lattendance-bot)との連携時の構成は以下のようになっています。  
+
+
 ## 機能
+### トップページ
+
+
 ### ログイン・ログアウト機能
 GitHub OAuthを用いたログイン機能があります。  
 GitHubのアカウントがあれば、誰でもログイン可能です。  
@@ -71,11 +90,27 @@ GitHubのアカウントがあれば、誰でもログイン可能です。
 ![edit_page](https://user-images.githubusercontent.com/64352857/117101975-49ddf900-adb2-11eb-82e1-79adeadb1afa.jpg)
 
 ### 出欠登録機能
-ログインしているユーザーのみ、自らの出欠の登録ができます。  
 チェックが出席、はてなが不明、ばつが欠席を示しています。  
+出欠登録の方法は、以下の2種類あります。  
+#### 1.サイト上で登録する
+ログインしているユーザーのみ、自らの出欠の登録ができます。  
 他のユーザーの出欠については閲覧のみ可能です。  
+変更したい出欠のボタンを押すことで出欠の変更が可能です。
 
 ![attendance_list](https://user-images.githubusercontent.com/64352857/117102229-dc7e9800-adb2-11eb-94f5-40ee506b61d7.jpg)
+
+#### 2.Slackのbot経由で登録する
+事前にユーザー登録と設定を行うことで、Slackのbot経由で出欠の登録ができます。  
+具体的には、以下の形式で出欠の登録・確認が可能です。  
+```
+@[ボット名][コマンド名][半角または全角のスペース1つ以上][日付(月/日)]
+```
+例えば、ある予定に7/1に出席と登録したい場合、対応するSlackチャンネル上のbotに対して、以下のメッセージを送信します。  
+```
+@lattendance-bot 出席　7/1
+```
+正常に完了した場合、以下のように登録が完了したというメッセージがbotから返され、lattendance上の出欠情報も更新されます。  
+
 
 ### URL共有機能
 自分が作成した予定のURLを他の人に共有することができます。  
@@ -87,21 +122,34 @@ https://user-images.githubusercontent.com/64352857/117112494-186e2900-adc4-11eb-
 ## 推奨環境
 レスポンシブ対応です。
 ### モバイル
-- Android  
-Chrome最新版、Android WebView (Android5.0以降) 、Firefox最新版、Microsoft Edge (chromium) 最新版  
-- iOS  
-Chrome最新版、Firefox最新版、Safari最新版、Microsoft Edge (chromium) 最新版
+|OS|Chrome|Safari|Android Browser & <br>WebView|Firefox|
+|:---:|:---:|:---:|:---:|:---:|
+|Android|〇|-|Android 5.0 以降|〇|
+|iOS|〇|〇|-|〇|
 ### デスクトップ
-- Windows10  
-Chrome最新版、Firefox最新版、Microsoft Edge (chromium) 最新版   
-- macOS  
-Chrome最新版、Firefox最新版、Safari最新版
+|OS|Chrome|Firefox|Microsoft Edge<br>(chromium)|Safari|Internet Explorer|
+|:---:|:---:|:---:|:---:|:---:|:---:|
+|Windows|〇|〇|〇|-|×|
+|macOS|〇|〇|△|〇|-|
 
 ## デプロイ環境
-Heroku, Node.js v14.16.1, PostgreSQL
+- Heroku
 
 ## 使用したライブラリ・フレームワーク
 ### バックエンド
-Node.js, Express, Jest
+- Node.js 14.17.1
+- Express 4.17.1
+- Passport 0.4.1
+
+### データベース
+- PostgreSQL 10.17
+- Sequelize 5.22.4
+
+### テスト
+- Jest 25.1.0
+
 ### フロントエンド
-jQuery, webpack, bootstrap4
+- jQuery 3.6.0
+- webpack 4.26.1
+- Bootstrap 4.5.3
+- Pug 3.0.2
