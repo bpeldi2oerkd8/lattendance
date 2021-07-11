@@ -45,49 +45,92 @@ git push heroku main:master
 Slackとの連携設定をすることにより、Slackのチャンネル上でbotにメッセージを送信するだけで出欠の確認・登録ができます。  
 botから本システムのAPIを叩く構成になっており、botのシステムを変更することで理論上すべてのチャットツールで利用できます。  
 APIにはJWT認証があり、セキュリティ的にも安全です。  
-Slackとの連携する場合、[lattendance-bot](https://github.com/bpeldi2oerkd8/lattendance-bot)を同時に起動し、事前に設定を行う必要があります。  
+Slackとの連携をする場合、[lattendance-bot](https://github.com/bpeldi2oerkd8/lattendance-bot)を同時に起動し、事前に設定を行う必要があります。  
 [lattendance-bot](https://github.com/bpeldi2oerkd8/lattendance-bot)の設定方法はREADMEを確認してください。  
   
 また、Bootstrap4を用いているため、全ページレスポンシブ対応です。  
 
 ## 構成図
-[lattendance-bot](https://github.com/bpeldi2oerkd8/lattendance-bot)との連携時の構成は以下のようになっています。  
-
+[lattendance-bot](https://github.com/bpeldi2oerkd8/lattendance-bot)との連携時の構成は以下のようになっています。
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/64352857/125193182-2047bf00-e286-11eb-97da-0fa231ba318e.jpg" width="500">
+</div>
 
 ## 機能
 ### トップページ
-
+<div align="center" style="display:flex;">
+  <img src="https://user-images.githubusercontent.com/64352857/125193586-18891a00-e288-11eb-9632-193563122d2c.jpg" width="600">
+  <img src="https://user-images.githubusercontent.com/64352857/125193592-1fb02800-e288-11eb-90ce-229cf48d03d1.jpg" width="200">
+</div>
+<div align="center" style="display:flex;">
+  <img src="https://user-images.githubusercontent.com/64352857/125193869-b6311900-e289-11eb-90bf-abeb957dd212.jpg" width="600">
+  <img src="https://user-images.githubusercontent.com/64352857/125193876-bb8e6380-e289-11eb-9447-b00e4d4cea34.jpg" width="200">
+</div>
 
 ### ログイン・ログアウト機能
 GitHub OAuthを用いたログイン機能があります。  
 GitHubのアカウントがあれば、誰でもログイン可能です。  
 ログアウトは上のナビゲーションバーの自分のユーザー名の部分をクリックすると、ログアウトボタンが出てきます。
 
-![top page](https://user-images.githubusercontent.com/64352857/117101549-688fc000-adb1-11eb-8e88-247d52948406.jpg)
-![login_page](https://user-images.githubusercontent.com/64352857/117101655-ab519800-adb1-11eb-975a-d51ea1c312a1.jpg)
-![OAuth_page](https://user-images.githubusercontent.com/64352857/117101710-c6bca300-adb1-11eb-9aac-b381691de5b3.jpg)
-![pres_logout_button](https://user-images.githubusercontent.com/64352857/117101771-e653cb80-adb1-11eb-9467-22d9dad8ab31.jpg)
+![ログインページ](https://user-images.githubusercontent.com/64352857/125193923-eed0f280-e289-11eb-9ef1-0ef59791580a.jpg)
+![OAuthページ](https://user-images.githubusercontent.com/64352857/125193942-06a87680-e28a-11eb-8962-3ddb6e19fa86.jpg)
+![ログアウトボタンを押したとき](https://user-images.githubusercontent.com/64352857/125193959-1aec7380-e28a-11eb-8b09-3f742e78087f.jpg)
+
+### URL共有機能
+自分が作成した予定のURLを他の人に共有することができます。  
+コピーボタンは1度しか押せません。  
+再度押したい場合はリロードしてください。  
+
+https://user-images.githubusercontent.com/64352857/117112494-186e2900-adc4-11eb-81b0-6d8e1d1267f8.mp4
 
 ### 予定一覧表示機能
 ログインしている場合、ログイン済みのユーザーが作成した予定の一覧が更新日時の近い順に表示されます。  
 それぞれの予定をクリックすると、その予定のページに移動します。  
 
-![user_page](https://user-images.githubusercontent.com/64352857/117101828-05eaf400-adb2-11eb-83ec-3c54399bb276.jpg)
+![予定一覧](https://user-images.githubusercontent.com/64352857/125194048-846c8200-e28a-11eb-9073-4eea2e70ccac.jpg)
 
 ### 予定作成機能
 新規の予定を作成できます。  
 予定名と説明、日程を改行区切りで入れることで予定の作成が可能です。  
 
-![schedule_making_page](https://user-images.githubusercontent.com/64352857/117101888-24e98600-adb2-11eb-9204-d0d9dde04ced.jpg)
+![予定作成](https://user-images.githubusercontent.com/64352857/125194064-98b07f00-e28a-11eb-984a-6e5c04ebc967.jpg)
 
 ### 予定削除・編集機能
 削除・編集ボタンから予定の削除・編集ができます。  
 削除・編集ができるのは、予定の作成者のみです。  
 編集後、出欠情報はリセットされます。  
 
-![schedule_page](https://user-images.githubusercontent.com/64352857/117101953-3e8acd80-adb2-11eb-9f73-8450e467c870.jpg)
-![delete_page](https://user-images.githubusercontent.com/64352857/117101969-45194500-adb2-11eb-8d58-5b3887e80f9c.jpg)
-![edit_page](https://user-images.githubusercontent.com/64352857/117101975-49ddf900-adb2-11eb-82e1-79adeadb1afa.jpg)
+![予定ページ](https://user-images.githubusercontent.com/64352857/125194165-22604c80-e28b-11eb-8380-d0dd91fc0d4b.jpg)
+![予定削除確認](https://user-images.githubusercontent.com/64352857/125194177-3441ef80-e28b-11eb-9bf5-e05fe705c9a8.jpg)
+![予定の編集](https://user-images.githubusercontent.com/64352857/125194210-44f26580-e28b-11eb-9cb0-5e3d5b971973.jpg)
+
+予定作成者ではない場合は、この項目は表示されません。  
+
+![予定ページ(作成者以外)](https://user-images.githubusercontent.com/64352857/125194913-51c48880-e28e-11eb-89a2-e8702f8a71df.jpg)
+
+### Slackとの連携登録機能
+Slackとの連携登録ができます。  
+記載されている手順に従い、チャンネルIDを登録・トークンを発行・環境変数としてトークンを登録することでbot経由で出欠登録が可能になります。  
+
+![Slackとの連携1](https://user-images.githubusercontent.com/64352857/125194702-618f9d00-e28d-11eb-866d-5f2f8ef0a200.jpg)
+![Slack連携2](https://user-images.githubusercontent.com/64352857/125194707-66545100-e28d-11eb-8079-abc4254b8f19.jpg)
+
+登録が完了すると、予定ページに「Slack連携済み」と記載されます。  
+
+![Slack連携済](https://user-images.githubusercontent.com/64352857/125194756-90a60e80-e28d-11eb-9511-4879fe5ebd8b.jpg)
+
+予定作成者ではない場合は、この項目は表示されません。  
+
+![予定ページ(作成者以外)](https://user-images.githubusercontent.com/64352857/125194913-51c48880-e28e-11eb-89a2-e8702f8a71df.jpg)
+
+### Slackとの連携設定変更機能
+Slackとの連携設定の変更ができます。  
+変更可能な項目は、以下の3つです。  
+- Slack連携の解除
+- チャンネルIDの変更
+- トークンの再発行
+
+![Slack連携設定の変更](https://user-images.githubusercontent.com/64352857/125195237-c946e780-e28f-11eb-9bb7-2ccda5efd508.jpg)
 
 ### 出欠登録機能
 チェックが出席、はてなが不明、ばつが欠席を示しています。  
@@ -95,9 +138,9 @@ GitHubのアカウントがあれば、誰でもログイン可能です。
 #### 1.サイト上で登録する
 ログインしているユーザーのみ、自らの出欠の登録ができます。  
 他のユーザーの出欠については閲覧のみ可能です。  
-変更したい出欠のボタンを押すことで出欠の変更が可能です。
+変更したい出欠のボタンを押すことで出欠の変更が可能です。  
 
-![attendance_list](https://user-images.githubusercontent.com/64352857/117102229-dc7e9800-adb2-11eb-94f5-40ee506b61d7.jpg)
+![出欠登録(サイト上)](https://user-images.githubusercontent.com/64352857/125194289-8e42b500-e28b-11eb-8fa7-b85ca8fcf283.jpg)
 
 #### 2.Slackのbot経由で登録する
 事前にユーザー登録と設定を行うことで、Slackのbot経由で出欠の登録ができます。  
@@ -110,17 +153,11 @@ GitHubのアカウントがあれば、誰でもログイン可能です。
 @lattendance-bot 出席　7/1
 ```
 正常に完了した場合、以下のように登録が完了したというメッセージがbotから返され、lattendance上の出欠情報も更新されます。  
-
-
-### URL共有機能
-自分が作成した予定のURLを他の人に共有することができます。  
-コピーボタンは1度しか押せません。  
-再度押したい場合はリロードしてください。  
-
-https://user-images.githubusercontent.com/64352857/117112494-186e2900-adc4-11eb-81b0-6d8e1d1267f8.mp4
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/64352857/125194309-a61a3900-e28b-11eb-8a10-3d5e5d003a9d.jpg" width="500">
+</div>
 
 ## 推奨環境
-レスポンシブ対応です。
 ### モバイル
 |OS|Chrome|Safari|Android Browser & <br>WebView|Firefox|
 |:---:|:---:|:---:|:---:|:---:|
