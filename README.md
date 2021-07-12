@@ -14,7 +14,8 @@ N予備校の教材をベースに制作しました。
 特に工夫した点は、<strong>Slackのbotを使って簡単に出欠の登録や確認をできるようにした点</strong>です。
 
 ## デモ
-https://user-images.githubusercontent.com/64352857/117108595-64b66a80-adbe-11eb-9e6c-0377d6bf6d9b.mp4
+<video src="https://user-images.githubusercontent.com/64352857/125240270-da8e0380-e324-11eb-90ba-8c4020c15cb8.mp4" controls controlsList="nodownload" oncontextmenu="return false;">
+
 
 ## ダウンロードとHerokuへのデプロイ方法
 1.このリポジトリをダウンロードする  
@@ -80,8 +81,8 @@ GitHubのアカウントがあれば、誰でもログイン可能です。
 自分が作成した予定のURLを他の人に共有することができます。  
 コピーボタンは1度しか押せません。  
 再度押したい場合はリロードしてください。  
+<video src="https://user-images.githubusercontent.com/64352857/125241402-58064380-e326-11eb-962b-fbfa9a9cb26c.mp4" controls controlsList="nodownload" oncontextmenu="return false;">
 
-https://user-images.githubusercontent.com/64352857/117112494-186e2900-adc4-11eb-81b0-6d8e1d1267f8.mp4
 
 ### 予定一覧表示機能
 ログインしている場合、ログイン済みのユーザーが作成した予定の一覧が更新日時の近い順に表示されます。  
@@ -138,12 +139,14 @@ Slackとの連携設定の変更ができます。
 #### 1.サイト上で登録する
 ログインしているユーザーのみ、自らの出欠の登録ができます。  
 他のユーザーの出欠については閲覧のみ可能です。  
-変更したい出欠のボタンを押すことで出欠の変更が可能です。  
+変更したい出欠のボタンを押すことで出欠の変更が可能です。
+Ajaxを使っています。  
 
 ![出欠登録(サイト上)](https://user-images.githubusercontent.com/64352857/125194289-8e42b500-e28b-11eb-8fa7-b85ca8fcf283.jpg)
 
 #### 2.Slackのbot経由で登録する
-事前にユーザー登録と設定を行うことで、Slackのbot経由で出欠の登録ができます。  
+事前にユーザー登録と設定を行うことで、Slackのbot経由で出欠の登録ができます。 
+HubotとAPIの認証にJWTを用いています。  
 具体的には、以下の形式で出欠の登録・確認が可能です。  
 ```
 @[ボット名][コマンド名][半角または全角のスペース1つ以上][日付(月/日)]
