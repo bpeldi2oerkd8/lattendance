@@ -12,9 +12,14 @@ const { map } = require('jquery');
 const csrfProtection = csrf({ cookie: true });
 const moment = require('moment-timezone');
 const { resolvePlugin } = require('@babel/core');
+const Room = require('../models/room');
 
 router.get('/new', authenticationEnsurer, csrfProtection, (req, res, next) => {
-  res.render('new', { user: req.user, csrfToken: req.csrfToken()});
+  if(parseInt(req.query.alert) === 1) {
+    res.render('new', { user: req.user, csrfToken: req.csrfToken(), channel_alert: true});
+  } else {
+    res.render('new', { user: req.user, csrfToken: req.csrfToken()});
+  }
 });
 
 router.post('/', authenticationEnsurer, csrfProtection, (req, res, next) => {
@@ -97,6 +102,8 @@ router.get('/:scheduleId', authenticationEnsurer, csrfProtection, (req, res, nex
 
           //表示用の更新日時
           schedule.formattedUpdatedAt = moment(schedule.updatedAt).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm');
+          // //表示用のroomId
+          // schedule.displayedRoomId = !schedule.roomId ? '登録されていません' : schedule.roomId;
           res.render('schedule', {
             user: req.user,
             schedule: schedule,
@@ -157,6 +164,7 @@ router.post('/:scheduleId', authenticationEnsurer, csrfProtection, (req, res, ne
       //?edit=1
       if(parseInt(req.query.edit) === 1){
         const updatedAt = new Date();
+
         schedule.update({
           scheduleId: schedule.scheduleId,
           scheduleName: req.body.scheduleName,
@@ -237,11 +245,28 @@ function deleteScheduleAll(scheduleId, done, err){
     const promises = dates.map((d) => { return d.destroy(); });
     return Promise.all(promises);
   }).then(() => {
-    return Schedule.findByPk(scheduleId).then((s) => { return s.destroy(); });
+    return Schedule.findByPk(scheduleId);
+  }).then((schedule) => {
+    const roomId = schedule.roomId;
+    schedule.destroy();
+    return new Promise((resolve) => {
+      resolve(roomId);
+    });
+  }).then((roomId) => {
+    if(roomId) {
+      return Room.findByPk(roomId).then((r) => { return r.destroy(); });
+    }
+    else {
+      return new Promise((resolve) => {
+        resolve();
+      });
+    }
   }).then(() => {
     if (err) return done(err);
     done();
   });
 }
+
+router.deleteScheduleAll = deleteScheduleAll;
 
 module.exports = router;

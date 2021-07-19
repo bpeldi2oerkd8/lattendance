@@ -14,10 +14,10 @@ $(window).on('load resize', () => {
 const url = $(location).attr('href');
 $('#current-url').val(url);
 
-//URLコピーボタン
+//コピーボタン
 const copyButton = $('#copy-button');
 copyButton.on('click', () => {
-  $('#current-url').trigger('select');
+  $('.copy-value').trigger('select');
   document.execCommand('copy');
   copyButton.text('Copied!');
   copyButton.attr('disabled', true);
