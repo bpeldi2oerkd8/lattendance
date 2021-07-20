@@ -39,7 +39,7 @@ heroku config:set SERVER_API_SECRET='あらかじめ定めたJWT認証に用い�
 ```
 6.Heroku環境へのプッシュ  
 ```bash
-git push heroku main:master
+git push heroku main:main
 ```
 
 ## 特徴
