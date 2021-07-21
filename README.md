@@ -74,7 +74,7 @@ GitHubのアカウントがあれば、誰でもログイン可能です。
 ログアウトは上のナビゲーションバーの自分のユーザー名の部分をクリックすると、ログアウトボタンが出てきます。
 
 ![ログインページ](https://user-images.githubusercontent.com/64352857/125193923-eed0f280-e289-11eb-9ef1-0ef59791580a.jpg)
-![OAuthページ](https://user-images.githubusercontent.com/64352857/125193942-06a87680-e28a-11eb-8962-3ddb6e19fa86.jpg)
+![OAuthページ](https://user-images.githubusercontent.com/64352857/126449542-32d9652d-38be-4385-9861-5689b798a9e0.jpg)
 ![ログアウトボタンを押したとき](https://user-images.githubusercontent.com/64352857/125193959-1aec7380-e28a-11eb-8b09-3f742e78087f.jpg)
 
 ### URL共有機能
