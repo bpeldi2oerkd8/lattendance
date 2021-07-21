@@ -14,13 +14,17 @@ var User = require('./models/user');
 var Schedule = require('./models/schedule');
 var Availability = require('./models/availability');
 var Dates = require('./models/date');
+var Room = require('./models/room');
 User.sync().then(() => {
-  Schedule.belongsTo(User, {foreignKey: 'createdBy'});
-  Schedule.sync();
-  Availability.belongsTo(User, {foreignKey: 'userId'});
-  Dates.sync().then(() => {
-    Availability.belongsTo(Dates, {foreignKey: 'dateId'});
-    Availability.sync();
+  Room.sync().then(() => {
+    Schedule.belongsTo(User, {foreignKey: 'createdBy'});
+    Schedule.belongsTo(Room, {foreignKey: 'roomId'});
+    Schedule.sync();
+    Availability.belongsTo(User, {foreignKey: 'userId'});
+    Dates.sync().then(() => {
+      Availability.belongsTo(Dates, {foreignKey: 'dateId'});
+      Availability.sync();
+    });
   });
 });
 
@@ -67,7 +71,10 @@ var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
 var slackIdRegisterRouter = require('./routes/slack-id-register');
 var schedulesRouter = require('./routes/schedules');
+var slackChannelLinkRouter = require('./routes/slack-channel-linker');
 var availabilitiesRouter = require('./routes/availabilities');
+var availabilities2Router = require('./routes/v1/availabilities2');
+var apiLoginRouter = require('./routes/v1/api-login');
 
 var app = express();
 app.use(helmet());
@@ -78,7 +85,7 @@ app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -92,6 +99,9 @@ app.use('/logout', logoutRouter);
 app.use('/slack-id-register', slackIdRegisterRouter);
 app.use('/schedules', schedulesRouter);
 app.use('/schedules', availabilitiesRouter);
+app.use('/schedules/slack-channel-linker', slackChannelLinkRouter);
+app.use('/api/v1/schedules', availabilities2Router);
+app.use('/api/v1/login', apiLoginRouter);
 
 app.get('/auth/github',
   passport.authenticate('github', { scope: ['user:email'] }),

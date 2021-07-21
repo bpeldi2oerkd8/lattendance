@@ -1,10 +1,54 @@
 extends layout
 
 block content
-  div.jumbotron.my-3
-    h1.display-4 Lattendance
-    p.lead 研究室の出欠機能を簡単に。
-  if user
+  if !user
+    //- PC用
+    div(data-ride="carousel", style="margin-left: calc(-50vw + 50%);")#title-slides-pc.carousel.slide.vw-100.d-none.d-sm-block
+      ol.carousel-indicators
+        li(data-target="#title-slides-pc", data-slide-to="0").active.bg-dark
+        li(data-target="#title-slides-pc", data-slide-to="1").bg-dark
+      div.carousel-inner.text-left
+        div.carousel-item.active
+          div.card.d-block.w-100 
+            img(src="/images/first_slide_PC.jpg", alt="title_slide").card-img
+            div.card-img-overlay.d-flex.flex-column.justify-content-center.h-100.pl-5
+              h1.text-dark Lattendance
+              p.text-dark 研究室の出欠登録を簡単に。
+        div.carousel-item
+          img(src="/images/second_slide_PC.png", alt="title_slide").card-img
+          div.card-img-overlay.d-flex.flex-column.justify-content-center.h-100.pl-5
+              h1.text-dark Botで簡単に出欠登録
+              p.text-dark Slackのbotと連携し、Slackでメッセージを送信するだけで<br>出欠の登録ができます。
+    //- スマホ・タブレット用
+    div(data-ride="carousel", style="margin-left: calc(-50vw + 50%);")#title-slides.carousel.slide.vw-100.d-block.d-sm-none
+      ol.carousel-indicators
+        li(data-target="#title-slides", data-slide-to="0").active.bg-dark
+        li(data-target="#title-slides", data-slide-to="1").bg-dark
+      div.carousel-inner.text-left
+        div.carousel-item.active
+          div.card.d-block.w-100 
+            img(src="/images/first_slide.jpg", alt="title_slide").card-img
+            div.card-img-overlay.d-flex.flex-column.justify-content-center.h-100.pl-2
+              h3.text-dark Lattendance
+              p.text-dark 研究室の出欠登録を簡単に。
+        div.carousel-item
+          img(src="/images/second_slide.png", alt="title_slide").card-img
+          div.card-img-overlay.d-flex.flex-column.justify-content-center.h-100.pl-2
+              h3.text-dark Botで簡単に出欠登録
+              p.text-dark Slackのbotと連携し、<br>Slackでメッセージを送信するだけで<br>出欠の登録ができます。
+  else
+    //- PC用
+    div(style="margin-left: calc(-50vw + 50%);").card.vw-100.d-none.d-sm-block
+      img(src="/images/first_slide_PC.jpg", alt="title_slide").card-img
+      div.card-img-overlay.d-flex.flex-column.justify-content-center.h-100.pl-5
+        h1.text-dark Lattendance
+        p.text-dark 研究室の出欠登録を簡単に。
+    //- スマホ・タブレット用
+    div(style="margin-left: calc(-50vw + 50%);").card.vw-100.d-block.d-sm-none
+      img(src="/images/first_slide.jpg", alt="title_slide").card-img
+      div.card-img-overlay.d-flex.flex-column.justify-content-center.h-100.pl-2
+        h3.text-dark Lattendance
+        p.text-dark 研究室の出欠登録を簡単に。
     h3.my-3 <strong>#{user.username}</strong>さんの作った予定一覧
     div
       a(href="/schedules/new").btn.btn-primary.mb-3 予定の作成
@@ -21,4 +65,3 @@ block content
               td 
                 a(href=`/schedules/${schedule.scheduleId}`) #{schedule.scheduleName}
               td #{schedule.formattedUpdatedAt}
-

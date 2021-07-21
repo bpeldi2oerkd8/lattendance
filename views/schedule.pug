@@ -9,7 +9,7 @@ block content
       if isMine
         div.pt-3
           button(type="button", data-toggle="modal", data-target="#deleteConfirmation").btn.btn-danger.mr-3 削除
-          div(tabindex="-1", role="dialog", aria-labelledby="exampleModalCenterTitle", aria-hidden="true")#deleteConfirmation.modal.fade
+          div(tabindex="-1", role="dialog", aria-labelledby="deleteConfirmationModal", aria-hidden="true")#deleteConfirmation.modal.fade
             div(role="document").modal-dialog.modal-dialog-centered
               div.modal-content
                 div.modal-header
@@ -23,10 +23,31 @@ block content
                     input(type="hidden" name="_csrf" value!=csrfToken)
                     button(type="submit").btn.btn-danger 削除
           a(href=`/schedules/${schedule.scheduleId}/edit`).btn.btn-primary.mr-3 編集
-    div.card-footer.text-muted 更新日時: #{schedule.formattedUpdatedAt}
+        - var linkedBot = schedule.roomId
+        if linkedBot
+          div.pt-3
+            p.card-text 
+              i(style="color: green;").fas.fa-check-square
+              |
+              | Slack連携済み
+              br
+              | チャンネルのID：#{schedule.roomId}
+              br
+              | チャンネルのトークン：****** (セキュリティ上、非表示にしています)
+            a(href=`/schedules/slack-channel-linker/${schedule.scheduleId}/edit`).btn.btn-dark
+              i.fab.fa-slack
+              |
+              | Slack連携設定の変更
+        else
+          div.pt-3
+            a(href=`/schedules/slack-channel-linker/${schedule.scheduleId}/new`).btn.btn-dark
+              i.fab.fa-slack
+              |
+              | Slackと連携する
+    div.card-footer.text-muted 作成者: #{schedule.user.userName}<br>更新日時: #{schedule.formattedUpdatedAt}
   h5.my-3 URLの共有
   div.input-group.mb-3
-    input(type="text", value="", readonly)#current-url.form-control
+    input(type="text", value="", readonly)#current-url.copy-value.form-control
     div.input-group-append
       button(type="button")#copy-button.btn.btn-outline-secondary Copy
   div.table-responsive
