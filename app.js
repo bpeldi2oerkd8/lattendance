@@ -7,6 +7,7 @@ var helmet = require('helmet');
 var session = require('express-session');
 var passport = require('passport');
 var GitHubStrategy = require('passport-github2').Strategy;
+var BasicStrategy = require('passport-http').BasicStrategy;
 var validator = require('validator');
 
 // モデルの読み込み
@@ -28,6 +29,9 @@ User.sync().then(() => {
   });
 });
 
+var BASIC_USER_ID = process.env.BASIC_USER_ID || require('./secret_info/basic_info').BASIC_USER_ID;
+var BASIC_PASSWORD = process.env.BASIC_PASSWORD || require('./secret_info/basic_info').BASIC_PASSWORD;
+
 var GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID || require('./secret_info/github_info').GITHUB_CLIENT_ID;
 var GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET || require('./secret_info/github_info').GITHUB_CLIENT_SECRET;
 
@@ -40,6 +44,16 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(function (obj, done) {
   done(null, obj);
 });
+
+passport.use(new BasicStrategy(
+  function(userid, password, done) {
+    if (userid === BASIC_USER_ID && password === BASIC_PASSWORD) {
+      return done(null, true);
+    } else {
+      return done(null, false);
+    }
+  }
+));
 
 passport.use(new GitHubStrategy({
   clientID: GITHUB_CLIENT_ID,
