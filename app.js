@@ -48,14 +48,12 @@ passport.deserializeUser(function (obj, done) {
 passport.use(new BasicStrategy({
   passReqToCallback: true
 },
-  async function(req, userid, password, done) {
+  function(req, userid, password, done) {
     if (userid === BASIC_USER_ID && password === BASIC_PASSWORD) {
-      return done(null, req.user);
+      // すでにログインしている場合はそのユーザー情報、そうでない場合は認証成功を知らせるためtrueを返す
+      const user = req.user ? req.user : true;
+      return done(null, user);
     } else {
-      await console.log('userid: ' + userid);
-      await console.log('BASIC_USER_ID: ' + BASIC_USER_ID);
-      await console.log('password: ' + password);
-      await console.log('BASIC_PASSWORD: ' + BASIC_PASSWORD);
       return done(null, false);
     }
   }

@@ -8,7 +8,7 @@ var router = express.Router();
 router.get('/',
   passport.authenticate('basic', { session: false }),
   function(req, res, next) {
-    if(req.user){
+    if(req.user && req.user.id){
       Schedule.findAll({
         where: {
           createdBy: req.user.id
@@ -24,7 +24,7 @@ router.get('/',
         });
       });
     } else {
-      res.render('index', { user: req.user });
+      res.render('index', { user: false });
     }
 });
 

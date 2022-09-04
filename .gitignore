@@ -1,5 +1,6 @@
 node_modules/
 secret_info/
+.vscode/
 .DS_Store
 
 # REST API test file
