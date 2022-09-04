@@ -37,6 +37,8 @@ heroku config:set GITHUB_CLIENT_SECRET='GitHub OAuthで登録したアプリの�
 heroku config:set SESSION_INFO='あらかじめ定めたセッションシークレット'
 heroku config:set SERVER_API_SECRET='あらかじめ定めたJWT認証に用いるAPIシークレット'  
 heroku config:set DATABASE_SSL='true'  
+heroku config:set BASIC_USER_ID='Basic認証のユーザー名'  
+heroku config:set BASIC_PASSWORD='Basic認証のパスワード'  
 ```
 6.Heroku環境へのプッシュ  
 ```bash
