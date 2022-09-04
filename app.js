@@ -48,10 +48,14 @@ passport.deserializeUser(function (obj, done) {
 passport.use(new BasicStrategy({
   passReqToCallback: true
 },
-  function(req, userid, password, done) {
+  async function(req, userid, password, done) {
     if (userid === BASIC_USER_ID && password === BASIC_PASSWORD) {
       return done(null, req.user);
     } else {
+      await console.log('userid: ' + userid);
+      await console.log('BASIC_USER_ID: ' + BASIC_USER_ID);
+      await console.log('password: ' + password);
+      await console.log('BASIC_PASSWORD: ' + BASIC_PASSWORD);
       return done(null, false);
     }
   }
