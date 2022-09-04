@@ -1,17 +1,23 @@
 'use strict';
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize(
-  process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost/lattendance',
-  //この部分はローカルの場合は入れない
-  {
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
+let sequelize = new Sequelize(
+  process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost/lattendance'
+);
+
+// DBにSSL接続を行う場合
+if (process.env.DATABASE_SSL) {
+  sequelize = new Sequelize(
+    process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost/lattendance',
+    {
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
       }
     }
-  }
-);
+  );
+}
 
 module.exports = {
   Sequelize : Sequelize,
