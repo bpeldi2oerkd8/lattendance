@@ -35,12 +35,85 @@ heroku config:set HEROKU_URL='作成したHerokuアプリのURL'
 heroku config:set GITHUB_CLIENT_ID='GitHub OAuthで登録したアプリのクライアントID'  
 heroku config:set GITHUB_CLIENT_SECRET='GitHub OAuthで登録したアプリのクライアントシークレット'  
 heroku config:set SESSION_INFO='あらかじめ定めたセッションシークレット'
-heroku config:set SERVER_API_SECRET='あらかじめ定めたJWT認証に用いるAPIシークレット'
+heroku config:set SERVER_API_SECRET='あらかじめ定めたJWT認証に用いるAPIシークレット'  
+heroku config:set DATABASE_SSL='true'  
 ```
 6.Heroku環境へのプッシュ  
 ```bash
 git push heroku main:main
 ```
+
+## ローカル環境での確認方法
+
+事前にGit・Node.js・yarn・PostgreSQLのインストールが必要です。  
+検証環境はUbuntu 20.04 LTSです。  
+
+### プロジェクトの初期設定
+1.このリポジトリをダウンロードする  
+2.GitとNode.js、yarnのインストール  
+3.必要なパッケージをインストール
+
+```bash
+yarn install
+```
+
+4.secret_info_sampleのフォルダ名をsecret_infoに変更し、各種変数を設定  
+
+### PostgreSQLのインストールと起動
+
+5.PostgreSQLのインストール
+
+```bash
+sudo apt install -y postgresql
+```
+
+4.PostgreSQLの起動
+
+```bash
+sudo service postgresql start
+```
+
+5.psqlへのログイン
+
+```bash
+sudo -u postgres psql
+```
+
+6.psql上でデータベースの作成
+
+```sql
+create database lattendance;
+```
+
+7.psql上でパスワードの変更
+
+```sql
+alter role postgres with password 'postgres';
+```
+
+8.psqlから出る
+
+```
+exit
+```
+
+### プロジェクトの起動
+
+9.起動
+
+```bash
+PORT=8000 yarn start
+```
+
+### 終了時
+
+10.Ctrl+Cを押し、起動コマンドを終了  
+11.PostgreSQLの停止
+
+```bash
+sudo service postgresql stop
+```
+
 
 ## 特徴
 Slackとの連携設定をすることにより、Slackのチャンネル上でbotにメッセージを送信するだけで出欠の確認・登録ができます。  
