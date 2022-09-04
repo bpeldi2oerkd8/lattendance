@@ -1,12 +1,12 @@
 var express = require('express');
 const Schedule = require('../models/schedule');
 const moment = require('moment-timezone');
-const authenticationEnsurer = require('./authentication-ensurer');
+const passport = require('passport');
 var router = express.Router();
 
 /* GET home page. */
 router.get('/',
-  authenticationEnsurer,
+  passport.authenticate('basic', { session: false }),
   function(req, res, next) {
     if(req.user){
       Schedule.findAll({

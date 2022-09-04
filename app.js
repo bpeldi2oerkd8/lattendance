@@ -45,10 +45,12 @@ passport.deserializeUser(function (obj, done) {
   done(null, obj);
 });
 
-passport.use(new BasicStrategy(
-  function(userid, password, done) {
+passport.use(new BasicStrategy({
+  passReqToCallback: true
+},
+  function(req, userid, password, done) {
     if (userid === BASIC_USER_ID && password === BASIC_PASSWORD) {
-      return done(null, true);
+      return done(null, req.user);
     } else {
       return done(null, false);
     }

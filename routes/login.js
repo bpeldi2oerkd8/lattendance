@@ -1,10 +1,10 @@
 'use strict';
 const express = require('express');
-const authenticationEnsurer = require('./authentication-ensurer');
+const passport = require('passport');
 const router = express.Router();
 
 router.get('/',
-  authenticationEnsurer,
+  passport.authenticate('basic', { session: false }),
   (req, res, next) => {
     const from = req.query.from;
     if(from) {
